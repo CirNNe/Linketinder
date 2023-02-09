@@ -2,7 +2,7 @@
 
 <p align="center">Programa baseado na fusão do Linkedln com o Tinder para matchs entre candidatos e empresas</p>
 
-![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=java&logoColor=white)
+![Apache Groovy](https://img.shields.io/badge/Apache%20Groovy-4298B8.svg?style=for-the-badge&logo=Apache+Groovy&logoColor=white)
 ![Version](https://img.shields.io/badge/version-v1.0.0-blue) 
 
 
@@ -34,7 +34,7 @@ pode curtir o perfil de um candidato e, também, o candidato pode curtir uma vag
 
 O projeto foi desenvolvido utilizando a linguagem de programação
 
-- Java
+- Apache Groovy
 
 ---
 
