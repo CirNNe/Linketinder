@@ -12,17 +12,19 @@ class CandidatoService {
      * Método responsável por receber e validar o objeto do tipo Candidato
      * @param candidato: objeto que será tratado e validado
      */
-    static validaDadosCadastroCandidato(Candidato candidato) {
+     boolean validaDadosCadastroCandidato(Candidato candidato, CandidatoDAO candidatoDAO) {
         if (!candidato.nome.matches("[A-Za-z]*") ||
                                     candidato.email.length() <= 0 ||
                                     candidato.idade > 100 ||
                                     candidato.idade < 18 ||
                                     candidato.cpf <= 0 ||
                                     candidato.cep <= 0){
-            println "OS VALORES PASSADOS SÃO INVÁLIDOS! TENTA NOVAMENTE"
-        } else {
-            CandidatoDAO.salvaDadosCandidato(candidato)
+
+            println "OS VALORES PASSADOS SÃO INVÁLIDOS! TENTE NOVAMENTE"
+            return false
         }
+         candidatoDAO.salvaDadosCandidato(candidato)
+         return true
     }
 
     /**

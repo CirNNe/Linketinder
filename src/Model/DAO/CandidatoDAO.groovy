@@ -11,12 +11,14 @@ class CandidatoDAO extends GenericDAO {
      * Método envia o arquivo em que os dados serão escritos e e os parâmetros do Candidato
      * @param candidato: objeto do tipo candidato que será escrito no arquivo
      */
-    static salvaDadosCandidato(Candidato candidato) {
+    boolean salvaDadosCandidato(Candidato candidato) {
 
         File candidatosTxt = new File('candidatos.txt')
 
         escreveNaTabela(candidatosTxt, candidato.nome, candidato.email, candidato.idade, candidato.cpf, candidato.cep,
                     candidato.descricaoPessoal, candidato.competencias)
+
+        return true
 
     }
 
