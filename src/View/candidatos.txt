@@ -1,5 +1,0 @@
-Primeiro;Email1;18;11111111111;22222222;Descricao 1;[Python, Django];
-Segundo;Email2;19;22222222222;44444444;Descricao 2;[Java, Groovy];
-Terceiro;Email3;20;33333333333;66666666;Descricao 3;[Groovy];
-Quarto;Email4;21;44444444444;88888888;Descricao 4;[JavaScript];
-Quinto;Email5;22;55555555555;10101010;Descricao 5;[TypeScript, Angular];
