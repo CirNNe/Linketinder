@@ -20,12 +20,21 @@ document.addEventListener('DOMContentLoaded', function () {
     /* EMPRESA */
     const telaOpcoesEmpresa = document.querySelector("#conteudo-empresa") as HTMLDivElement
     const telaCadastroEmpresa = document.querySelector("#conteudo-cadastro-empresa") as HTMLDivElement
-    const telaCadastroVaga = document.querySelector("#conteudo-cadastro-vaga") as HTMLDivElement
+    const telaCadastroVaga = document.querySelector("#conteudo-cadastro-vaga")! as HTMLDivElement
     const telaListaCandidatos = document.querySelector("#conteudo-lista-candidatos") as HTMLDivElement
 
     const botaoOpcaoCadastrarEmpresa = document.querySelector("#botao-escolha-cadastrar-empresa") as HTMLButtonElement
     const botaoOpcaoCadastrarVaga = document.querySelector("#botao-escolha-cadastrar-vaga") as HTMLButtonElement
     const botaoOpcaoListaCandidatos = document.querySelector("#botao-escolha-lista-candidatos") as HTMLButtonElement
+    const botaoCadastrarNovaVaga = document.querySelector("#botao-cadastrar-nova-vaga")! as HTMLButtonElement
+
+    const inputNomeNovaVaga = document.querySelector("#nome-nova-vaga") as HTMLInputElement
+    const inputEmpresaNovaVaga = document.querySelector("#empresa-nova-vaga") as HTMLInputElement
+    const inputDescricaoNovaVaga = document.querySelector("#descricao-nova-vaga") as HTMLInputElement
+    const inputCompetenciasNovaVaga = document.getElementsByName("competencias-nova-vaga") as unknown as Array<any>
+
+
+
 
     /* EMPRESA */
     if (botaoOpcaoCadastrarEmpresa) {
@@ -39,6 +48,70 @@ document.addEventListener('DOMContentLoaded', function () {
         botaoOpcaoCadastrarVaga.addEventListener('click', function () {
             telaOpcoesEmpresa.style.display = "none"
             telaCadastroVaga.style.display = "block"
+        })
+    }
+
+    if(botaoCadastrarNovaVaga) {
+        botaoCadastrarNovaVaga.addEventListener('click', function () {
+            const competenciasSelecionadasNovaVaga = [] as Array<string>
+            inputCompetenciasNovaVaga.forEach((competencias) => {
+                if(competencias.checked) {
+                    competenciasSelecionadasNovaVaga.push(competencias.value)
+                }
+            })
+
+            let vaga = {
+                id: gerarId(),
+                nome: inputNomeNovaVaga.value,
+                empresa: inputEmpresaNovaVaga.value,
+                descricao: inputDescricaoNovaVaga.value,
+                competencias: competenciasSelecionadasNovaVaga.toString()
+            }
+            salvarVagaLocalStorage(vaga)
+            inputNomeNovaVaga.value = ""
+            inputEmpresaNovaVaga.value = ""
+            inputDescricaoNovaVaga.value = ""
+            inputCompetenciasNovaVaga.forEach((competencia) => {
+                competencia.value = ""
+            })
+            telaCadastroVaga.style.display = "none"
+            telaOpcoesEmpresa.style.display = "block"
+        })
+    }
+
+    function salvarVagaLocalStorage(vaga: object) {
+        let listaVagas = localStorage.getItem('vagas') as string
+        if(listaVagas) {
+            let listaVagasJson = []
+            listaVagasJson = JSON.parse(listaVagas)
+            listaVagasJson.push(vaga)
+            localStorage.setItem('vagas', JSON.stringify(listaVagasJson))
+        }
+        else {
+            localStorage.setItem('vagas', '[]')
+            let listaVagasJson = []
+            listaVagasJson = JSON.parse(listaVagas)
+            listaVagasJson.push(vaga)
+            localStorage.setItem('vagas', JSON.stringify(listaVagasJson))
+        }
+    }
+
+    function mostrarListaVagas() {
+        const listaVagasLocalStorage = localStorage.getItem('vagas') as string
+        const listaVagas = JSON.parse(listaVagasLocalStorage)
+        if (listaVagasLocalStorage) {
+            for(let posicao = 0; posicao < listaVagas.length; posicao++) {
+                let div = criarTagDivVaga(listaVagas[posicao])
+                telaVagas.appendChild(div)
+            }
+        }
+    }
+
+    if(botaoOpcaoVagasDisponiveis) {
+        botaoOpcaoVagasDisponiveis.addEventListener('click', function () {
+            mostrarListaVagas()
+            telaOpcoesCandidato.style.display = 'none'
+            telaVagas.style.display = 'block'
         })
     }
 
@@ -62,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
         botaoCadastrarNovoCandidato.addEventListener('click', function () {
             const competenciasSelecionadas = [] as Array<string>
             inputCompetencias.forEach((competencias) => {
-                if (competencias.checked) {
+                if(competencias.checked) {
                     competenciasSelecionadas.push(competencias.value)
                 }
             })
@@ -93,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function salvarCandidatoLocalStorage(candidato: object) {
         let listaCandidatos = localStorage.getItem('candidatos') as string
-        if (listaCandidatos) {
+        if(listaCandidatos) {
             let listaCandidatosJson = []
             listaCandidatosJson = JSON.parse(listaCandidatos)
             listaCandidatosJson.push(candidato)
@@ -111,25 +184,27 @@ document.addEventListener('DOMContentLoaded', function () {
     function mostrarListaCandidatos() {
         const listaCandidatosLocalStorage = localStorage.getItem('candidatos') as string
         const listaCandidatos = JSON.parse(listaCandidatosLocalStorage)
-        if (listaCandidatosLocalStorage) {
+        if(listaCandidatosLocalStorage) {
             for (let posicao = 0; posicao < listaCandidatos.length; posicao++) {
-                let div = criaTagDiv(listaCandidatos[posicao])
+                let div = criaTagDivCandidato(listaCandidatos[posicao])
                 telaListaCandidatos.appendChild(div)
             }
         }
     }
 
-    botaoOpcaoListaCandidatos.addEventListener('click', function () {
-        mostrarListaCandidatos()
-        telaOpcoesEmpresa.style.display = 'none'
-        telaListaCandidatos.style.display = 'block'
-    })
+    if(botaoOpcaoListaCandidatos) {
+        botaoOpcaoListaCandidatos.addEventListener('click', function () {
+            mostrarListaCandidatos()
+            telaOpcoesEmpresa.style.display = 'none'
+            telaListaCandidatos.style.display = 'block'
+        })
+    }
 
     function gerarId() {
         return Math.floor(Math.random() * 3000)
     }
 
-    function criaTagDiv(candidato: any) {
+    function criaTagDivCandidato(candidato: any) {
         let div = document.createElement('div')
         div.id = candidato.id
 
@@ -212,6 +287,58 @@ document.addEventListener('DOMContentLoaded', function () {
         div.appendChild(br)
 
         return div
+    }
+
+    function criarTagDivVaga(vaga: any) {
+        let div = document.createElement('div')
+        div.id = vaga.id
+
+        let ul = document.createElement("ul")
+        ul.classList.add("estilo-ul")
+
+        let pNomeVaga = document.createElement('p')
+        pNomeVaga.innerHTML = 'Nome:'
+        pNomeVaga.classList.add('estilo-p')
+        let liNomeVagas = document.createElement('li')
+        liNomeVagas.classList.add('dados-usuario')
+        liNomeVagas.innerHTML = vaga.nome
+
+        let pEmpresaVaga = document.createElement('p')
+        pEmpresaVaga.innerHTML = 'Empresa:'
+        pEmpresaVaga.classList.add('estilo-p')
+        let liEmpresaVagas = document.createElement('li')
+        liEmpresaVagas.classList.add('dados-usuario')
+        liEmpresaVagas.innerHTML = vaga.empresa
+
+        let pDescricaoVaga = document.createElement('p')
+        pDescricaoVaga.innerHTML = 'Descrição:'
+        pDescricaoVaga.classList.add('estilo-p')
+        let liDescricaoVagas = document.createElement('li')
+        liDescricaoVagas.classList.add('dados-usuario')
+        liDescricaoVagas.innerHTML = vaga.descricao
+
+        let pCompetenciasVaga = document.createElement('p')
+        pCompetenciasVaga.innerHTML = 'Competências:'
+        pCompetenciasVaga.classList.add('estilo-p')
+        let liCompetenciasVagas = document.createElement('li')
+        liCompetenciasVagas.classList.add('dados-usuario')
+        liCompetenciasVagas.innerHTML = vaga.competencias
+
+        let br = document.createElement("br")
+
+        ul.appendChild(pNomeVaga)
+        ul.appendChild(liNomeVagas)
+        ul.appendChild(pEmpresaVaga)
+        ul.appendChild(liEmpresaVagas)
+        ul.appendChild(pDescricaoVaga)
+        ul.appendChild(liDescricaoVagas)
+        ul.appendChild(pCompetenciasVaga)
+        ul.appendChild(liCompetenciasVagas)
+        div.appendChild(ul)
+        div.appendChild(br)
+
+        return div
+
     }
 
 })

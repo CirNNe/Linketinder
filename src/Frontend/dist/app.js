@@ -25,6 +25,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const botaoOpcaoCadastrarEmpresa = document.querySelector("#botao-escolha-cadastrar-empresa");
     const botaoOpcaoCadastrarVaga = document.querySelector("#botao-escolha-cadastrar-vaga");
     const botaoOpcaoListaCandidatos = document.querySelector("#botao-escolha-lista-candidatos");
+    const botaoCadastrarNovaVaga = document.querySelector("#botao-cadastrar-nova-vaga");
+    const inputNomeNovaVaga = document.querySelector("#nome-nova-vaga");
+    const inputEmpresaNovaVaga = document.querySelector("#empresa-nova-vaga");
+    const inputDescricaoNovaVaga = document.querySelector("#descricao-nova-vaga");
+    const inputCompetenciasNovaVaga = document.getElementsByName("competencias-nova-vaga");
     /* EMPRESA */
     if (botaoOpcaoCadastrarEmpresa) {
         botaoOpcaoCadastrarEmpresa.addEventListener('click', function () {
@@ -36,6 +41,31 @@ document.addEventListener('DOMContentLoaded', function () {
         botaoOpcaoCadastrarVaga.addEventListener('click', function () {
             telaOpcoesEmpresa.style.display = "none";
             telaCadastroVaga.style.display = "block";
+        });
+    }
+    if (botaoCadastrarNovaVaga) {
+        botaoOpcaoCadastrarVaga.addEventListener('click', function () {
+            const competenciasSelecionadasNovaVaga = [];
+            inputCompetenciasNovaVaga.forEach((competencias) => {
+                if (competencias.checked) {
+                    competenciasSelecionadasNovaVaga.push(competencias.value);
+                }
+            });
+            let vaga = {
+                id: gerarId(),
+                nome: inputNomeNovaVaga.value,
+                empresa: inputEmpresaNovaVaga.value,
+                descricao: inputDescricaoNovaVaga.value,
+                competencias: competenciasSelecionadasNovaVaga.toString()
+            };
+            inputNomeNovaVaga.value = "";
+            inputEmpresaNovaVaga.value = "";
+            inputDescricaoNovaVaga.value = "";
+            inputCompetenciasNovaVaga.forEach((competencia) => {
+                competencia.value = "";
+            });
+            telaCadastroVaga.style.display = "none";
+            telaOpcoesEmpresa.style.display = "block";
         });
     }
     /* CANDIDATO */
