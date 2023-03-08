@@ -1,8 +1,8 @@
-package Controller
+package Backend.Controller
 
-import Model.DAO.EmpresaDAO
-import Model.Entidade.Empresa
-import Service.EmpresaService
+import Backend.Model.DAO.EmpresaDAO
+import Backend.Model.Entidade.Empresa
+import Backend.Service.EmpresaService
 
 /**
  * Classe usada para a comunicação entre a view e a classe EmpresaService

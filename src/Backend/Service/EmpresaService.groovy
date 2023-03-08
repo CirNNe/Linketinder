@@ -1,7 +1,7 @@
-package Service
+package Backend.Service
 
-import Model.DAO.EmpresaDAO
-import Model.Entidade.Empresa
+import Backend.Model.DAO.EmpresaDAO
+import Backend.Model.Entidade.Empresa
 
 /**
  * Classe responsável pela regra de negócio da aplicação

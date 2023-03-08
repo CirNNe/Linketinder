@@ -1,6 +1,6 @@
-package Model.DAO
+package Backend.Model.DAO
 
-import Model.Entidade.Empresa
+import Backend.Model.Entidade.Empresa
 
 /**
  * Classe responsável por enviar os dados da empresa para a classe GenericDAO

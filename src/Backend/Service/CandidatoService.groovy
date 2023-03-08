@@ -1,7 +1,7 @@
-package Service
+package Backend.Service
 
-import Model.Entidade.Candidato
-import Model.DAO.CandidatoDAO
+import Backend.Model.Entidade.Candidato
+import Backend.Model.DAO.CandidatoDAO
 
 /**
  * Classe responsável pela regra de negócio da aplicação

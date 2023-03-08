@@ -1,8 +1,8 @@
-package Controller
+package Backend.Controller
 
-import Model.DAO.CandidatoDAO
-import Model.Entidade.Candidato
-import Service.CandidatoService
+import Backend.Model.DAO.CandidatoDAO
+import Backend.Model.Entidade.Candidato
+import Backend.Service.CandidatoService
 
 /**
  * Classe usada para a comunicação entre a view e a classe CandidatoService

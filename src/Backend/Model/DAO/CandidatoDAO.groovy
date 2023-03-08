@@ -1,6 +1,6 @@
-package Model.DAO
+package Backend.Model.DAO
 
-import Model.Entidade.Candidato
+import Backend.Model.Entidade.Candidato
 
 /**
  * Classe responsável por enviar os dados do candidato para a classe GenericDAO

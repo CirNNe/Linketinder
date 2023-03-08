@@ -1,8 +1,8 @@
-package Test
+package Backend.Test
 
-import Model.DAO.CandidatoDAO
-import Model.Entidade.Candidato
-import Service.CandidatoService
+import Backend.Model.DAO.CandidatoDAO
+import Backend.Model.Entidade.Candidato
+import Backend.Service.CandidatoService
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 

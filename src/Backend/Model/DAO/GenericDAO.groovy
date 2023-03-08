@@ -1,4 +1,4 @@
-package Model.DAO
+package Backend.Model.DAO
 
 /**
  * Classe abstrata responsável pelos métodos comuns as outras classes DAO

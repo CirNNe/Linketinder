@@ -1,4 +1,4 @@
-package Model.Entidade
+package Backend.Model.Entidade
 
 /**
  * Classe responsável pela definição do objeto do tipo Empresa

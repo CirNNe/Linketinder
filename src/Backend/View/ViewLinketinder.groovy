@@ -1,9 +1,7 @@
-package View
+package Backend.View
 
-import Controller.CandidatoController
-import Controller.EmpresaController
-import Model.Entidade.Candidato
-import Model.Entidade.Empresa
+import Backend.Controller.CandidatoController
+import Backend.Controller.EmpresaController
 
 CandidatoController candidatoController = new CandidatoController()
 EmpresaController empresaController = new  EmpresaController()
