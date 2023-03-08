@@ -131,6 +131,10 @@ li {
     font-size: 20px;
 }
 
+#conteudo-lista-empresas {
+    display: none;
+}
+
 /* ---- EMPRESA ------------------------------------------------------------------------------------- */
 
 #tela-empresa ul{

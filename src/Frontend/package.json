@@ -18,5 +18,9 @@
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
+  },
+  "dependencies": {
+    "@types/chart.js": "^2.9.37",
+    "chart.js": "^4.2.1"
   }
 }

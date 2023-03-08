@@ -41,7 +41,7 @@
                     <p>Descrição Empresa:</p>
                     <li><input class="input-barra" id="descricao-nova-empresa" type="text"></li>
                     <br>
-                    <button class="botao-cadastrar">Cadastrar</button>
+                    <button class="botao-cadastrar" id="botao-cadastrar-nova-empresa">Cadastrar</button>
                     <button class="botao-voltar"><a href="empresa.html">Voltar</a></button>
                 </ul>
             </div>
@@ -60,7 +60,7 @@
                     <br>
                     <ul id="lista-competencias">
                         <li><label for="competencia-git"><input id="competencia-git" type="checkbox" name="competencias-nova-vaga" value="Git">Git</label></li>
-                        <li><label for="competencia-metodologias-ageis"><input id="competencia-metodologias-ageis" type="checkbox" name="competencias-nova-vaga" value="Metodologias Ageis">Metodologias Ágeis</label></li>
+                        <li><label for="competencia-metodologias-ageis"><input id="competencia-metodologias-ageis" type="checkbox" name="competencias-nova-vaga" value="Metodologias Ágeis">Metodologias Ágeis</label></li>
                         <li><label for="competencia-testes"><input id="competencia-testes" type="checkbox" name="competencias-nova-vaga" value="Testes">Testes</label></li>
                         <li><label for="competencia-java"><input id="competencia-java" type="checkbox" name="competencias-nova-vaga" value="Java">Java</label></li>
                         <li><label for="competencia-Groovy"><input id="competencia-Groovy" type="checkbox" name="competencias-nova-vaga" value="Groovy">Groovy</label></li>
@@ -74,12 +74,26 @@
             </div>
         </div>
 
+
+
         <div class="conteudo" id="conteudo-lista-candidatos">
+            <h1>Gráfico</h1>
+            <button class="botao-voltar"><a href="empresa.html">Voltar</a></button>
+            <div>
+                <canvas id="myChart"></canvas>
+            </div>
             <h1>Lista de Candidatos:</h1>
             <div id="tela-lista-candidatos">
             </div>
-            <button class="botao-voltar"><a href="empresa.html">Voltar</a></button>
         </div>
+
+        <div class="conteudo" id="conteudo-lista-empresas">
+            <h1>Lista de Empresas:</h1>
+            <div id="tela-lista-empresas">
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         <script src="app.js"></script>
     </body>
