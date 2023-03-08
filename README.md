@@ -25,6 +25,9 @@ pode curtir o perfil de um candidato e, também, o candidato pode curtir uma vag
 
 ## 🔖&nbsp; Versão
 
+![Version](https://img.shields.io/badge/version-v1.1.0-blue)
+- Telas de Usuários sem Link com o Backend
+
 ![Version](https://img.shields.io/badge/version-v1.0.0-blue)
 - Definida a versão base do sistema
 
@@ -32,9 +35,12 @@ pode curtir o perfil de um candidato e, também, o candidato pode curtir uma vag
 
 ## 🚀 Tecnologias utilizadas
 
-O projeto foi desenvolvido utilizando a linguagem de programação
+O projeto foi desenvolvido com as tecnologias
 
 - Apache Groovy
+- TypeScript
+- HTML5
+- CSS3
 
 ---
 
