@@ -107,6 +107,10 @@ li {
     margin: 5px 1px;
 }
 
+#tela-cadastro-candidato .input-barra {
+    width: 300px;
+}
+
 #lista-competencias {
     margin-left: -40px;
 }

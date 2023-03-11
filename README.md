@@ -25,6 +25,9 @@ pode curtir o perfil de um candidato e, também, o candidato pode curtir uma vag
 
 ## 🔖&nbsp; Versão
 
+![Version](https://img.shields.io/badge/version-v1.2.0-blue)
+- Validação dos Dados dos Usuários Recebidos por Inputs
+
 ![Version](https://img.shields.io/badge/version-v1.1.0-blue)
 - Telas de Usuários sem Link com o Backend
 

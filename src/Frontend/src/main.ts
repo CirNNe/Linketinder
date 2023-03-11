@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const inputCpfNovoCandidato = document.querySelector("#cpf-novo-candidato") as HTMLInputElement
     const inputCepNovoCandidato = document.querySelector("#cep-novo-candidato") as HTMLInputElement
     const inputDescricaoPessoalNovoCandidato = document.querySelector("#descricao-pessoal-novo-candidato") as HTMLInputElement
+    const inputLikedinNovoCandidato = document.querySelector("#linkedin-novo-candidato") as HTMLInputElement
     const inputCompetencias = document.getElementsByName("competencias-novo-candidato") as unknown as Array<any>
 
     /* ELEMENTOS EMPRESA */
@@ -64,6 +65,26 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     }
 
+    function validaDadosEmpresa(empresa: any) {
+        if (!empresa.nome.match(/^.{3,250}$/gi)) {
+            alert("Nome inválido!")
+        } else if (!empresa.email.match(/\S+@\w+\.\w{2,6}(\.\w{2})?/g)) {
+            alert("E-mail inválido!")
+        } else if (!empresa.cnpj.match(/^([0-9]{2}[0-9]{3}[0-9]{3}[0-9]{4}[0-9]{2})$/g)) {
+            alert("CNPJ inválido")
+        } else if (!empresa.cep.match(/^([0-9]{8})$/g)) {
+            alert("CEP inválido!")
+        } else if (!empresa.estado.match(/^([A-Za-zÀ-úàú])+$/gi)) {
+            alert("Estado inválido!")
+        } else if (!empresa.pais.match(/^([A-Za-zÀ-úàú])+$/gi)) {
+            alert("País inválido!")
+        } else if(!empresa.descricao.match(/^.{3,250}$/gi)) {
+            alert("Descrição inválida!")
+        } else {
+            return empresa
+        }
+    }
+
     if(botaoCadastrarNovaEmpresa) {
         botaoCadastrarNovaEmpresa.addEventListener('click', function () {
 
@@ -77,11 +98,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 pais: inputPaisNovaEmpresa.value,
                 descricao: inputDescricaoNovaEmpresa.value
             }
-
-            salvarEmpresaLocalStorage(empresa)
-            telaCadastroEmpresa.style.display = 'none'
-            telaOpcoesEmpresa.style.display = 'block'
-
+            if(validaDadosEmpresa(empresa)) {
+                salvarEmpresaLocalStorage(empresa)
+                inputNomeNovaEmpresa.value = ""
+                inputEmailNovaEmpresa.value = ""
+                inputCnpjNovaEmpresa.value = ""
+                inputCepNovaEmpresa.value = ""
+                inputEstadoNovaEmpresa.value = ""
+                inputPaisNovaEmpresa.value = ""
+                inputDescricaoNovaEmpresa.value = ""
+                telaCadastroEmpresa.style.display = 'none'
+                telaOpcoesEmpresa.style.display = 'block'
+                window.location.reload()
+            }
         })
     }
 
@@ -113,6 +142,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function validaDadosVaga(vaga: any) {
+        if (!vaga.nome.match(/^.{3,250}$/gi)) {
+            alert("Nome inválido!")
+        } else if (!vaga.empresa.match(/^.{3,250}$/gi)) {
+            alert("Empresa inválida!")
+        } else if(!vaga.descricao.match(/^.{3,250}$/gi)) {
+            alert("Descrição inválida!")
+        } else {
+            return vaga
+        }
+    }
 
     if(botaoCadastrarNovaVaga) {
         botaoCadastrarNovaVaga.addEventListener('click', function () {
@@ -130,15 +170,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 descricao: inputDescricaoNovaVaga.value,
                 competencias: competenciasSelecionadasNovaVaga.toString()
             }
-            salvarVagaLocalStorage(vaga)
-            inputNomeNovaVaga.value = ""
-            inputEmpresaNovaVaga.value = ""
-            inputDescricaoNovaVaga.value = ""
-            inputCompetenciasNovaVaga.forEach((competencia) => {
-                competencia.value = ""
-            })
-            telaCadastroVaga.style.display = "none"
-            telaOpcoesEmpresa.style.display = "block"
+            if(validaDadosVaga(vaga)) {
+                salvarVagaLocalStorage(vaga)
+                inputNomeNovaVaga.value = ""
+                inputEmpresaNovaVaga.value = ""
+                inputDescricaoNovaVaga.value = ""
+                inputCompetenciasNovaVaga.forEach((competencia) => {
+                    competencia.value = ""
+                })
+                telaCadastroVaga.style.display = "none"
+                telaOpcoesEmpresa.style.display = "block"
+                window.location.reload()
+            }
         })
     }
 
@@ -195,6 +238,24 @@ document.addEventListener('DOMContentLoaded', function () {
         })
     }
 
+    function validaDadosCandidato(candidato: any) {
+        if (!candidato.nome.match(/^[a-zA-Zà-úÀ-Ú\s]+$/g)) {
+            alert("Nome inválido!")
+        } else if (!candidato.email.match(/\S+@\w+\.\w{2,6}(\.\w{2})?/g)) {
+            alert("E-mail inválido!")
+        } else if (!candidato.cpf.match(/^([0-9]{3}[0-9]{3}[0-9]{3}[0-9]{2})$/g)) {
+            alert("CPF inválido")
+        } else if (!candidato.cep.match(/^([0-9]{8})$/g)) {
+            alert("CEP inválido!")
+        } else if (!candidato.linkedin.match(/(http:\/\/)?(www\.)?linkedin\.com\/in\/\w+/g)) {
+            alert("Linkedin inválido!")
+        } else if(!candidato.descricao.match(/^.{3,250}$/gi)) {
+            alert("Descrição pessoal inválida!")
+        } else {
+            return candidato
+        }
+    }
+
     if (botaoCadastrarNovoCandidato) {
         botaoCadastrarNovoCandidato.addEventListener('click', function () {
             const competenciasSelecionadas = [] as Array<string>
@@ -211,20 +272,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 cpf: inputCpfNovoCandidato.value,
                 cep: inputCepNovoCandidato.value,
                 descricao: inputDescricaoPessoalNovoCandidato.value,
+                linkedin: inputLikedinNovoCandidato.value,
                 competencias: competenciasSelecionadas.toString()
             }
-            salvarCandidatoLocalStorage(candidato)
-            inputNomeNovoCandidato.value = ""
-            inputEmailNovoCandidato.value = ""
-            inputIdadeNovoCandidato.value = ""
-            inputCpfNovoCandidato.value = ""
-            inputCepNovoCandidato.value = ""
-            inputDescricaoPessoalNovoCandidato.value = ""
-            inputCompetencias.forEach((competencia) => {
-                competencia.value = ""
-            })
-            telaCadastroCandidato.style.display = "none"
-            telaOpcoesCandidato.style.display = "block"
+
+            if(validaDadosCandidato(candidato)) {
+                salvarCandidatoLocalStorage(candidato)
+                inputNomeNovoCandidato.value = ""
+                inputEmailNovoCandidato.value = ""
+                inputIdadeNovoCandidato.value = ""
+                inputCpfNovoCandidato.value = ""
+                inputCepNovoCandidato.value = ""
+                inputDescricaoPessoalNovoCandidato.value = ""
+                inputLikedinNovoCandidato.value = ""
+                inputCompetencias.forEach((competencia) => {
+                    competencia.value = ""
+                })
+                telaCadastroCandidato.style.display = "none"
+                telaOpcoesCandidato.style.display = "block"
+                window.location.reload()
+            }
         })
     }
 
@@ -323,6 +390,14 @@ document.addEventListener('DOMContentLoaded', function () {
         let liDescricaoCandidato = document.createElement('li')
         liDescricaoCandidato.classList.add('dados-usuario')
         liDescricaoCandidato.innerHTML = candidato.descricao
+
+        let pLinkedinCandidato = document.createElement('p')
+        pLinkedinCandidato.innerHTML = 'Linkedin:'
+        pLinkedinCandidato.classList.add('estilo-p')
+
+        let liLinkedinCandidato = document.createElement('li')
+        liLinkedinCandidato.classList.add('dados-usuario')
+        liLinkedinCandidato.innerHTML = candidato.linkedin
 
         let pCompetenciasCandidato = document.createElement('p')
         pCompetenciasCandidato.innerHTML = 'Competências:'
