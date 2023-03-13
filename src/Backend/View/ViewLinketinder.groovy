@@ -70,11 +70,11 @@ while (opcao != 0) {
         candidatoController.recebeDados(nome, email, idade, cpf, cep, descricaoPessoal, listaDeCompetencias)
     }
 
-    if (opcao == 2) {
+    else if (opcao == 2) {
         candidatoController.listaCandidatos()
     }
 
-    if (opcao == 3) {
+    else if (opcao == 3) {
 
         Scanner inputEmpresa = new Scanner(System.in)
         Scanner inputCnpj = new Scanner(System.in)
@@ -105,11 +105,11 @@ while (opcao != 0) {
 
     }
 
-    if (opcao == 4) {
+    else if (opcao == 4) {
         empresaController.listaEmpresas()
     }
 
-    if (opcao == 0) {
+    else if (opcao == 0) {
         break
     }
 }
