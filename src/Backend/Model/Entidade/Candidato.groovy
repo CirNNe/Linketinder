@@ -1,23 +1,22 @@
 package Backend.Model.Entidade
 
-/**
- * Classe responsável pela definição do objeto do tipo Candidato
- */
 class Candidato {
-    String nome, email, descricaoPessoal
+    String nome, email, descricaoPessoal, senha, dataNascimento, pais
     long cpf
-    int idade, cep
+    int id, cep
     List competencias
 
 
     @Override
     String toString() {
-        return nome + ';' +
-                email + ';' +
-                idade + ';' +
-                cpf + ';' +
-                cep + ';' +
-                descricaoPessoal + ';' +
-                competencias
+        return 'ID: ' + id + ' - ' +
+                'Nome: ' + nome + ' - ' +
+                'E-mail: ' + email + ' - ' +
+                'Data de Nascimento: ' + dataNascimento + ' - ' +
+                'CPF: ' + cpf + ' - ' +
+                'CEP: ' + cep + ' - ' +
+                'País: ' + pais + ' - ' +
+                'Descrição Pessoal: ' + descricaoPessoal + ' - ' +
+                'Competências: ' + competencias
     }
 }

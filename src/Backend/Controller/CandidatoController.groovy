@@ -2,44 +2,52 @@ package Backend.Controller
 
 import Backend.Model.DAO.CandidatoDAO
 import Backend.Model.Entidade.Candidato
+import Backend.Model.Entidade.Competencia
 import Backend.Service.CandidatoService
 
-/**
- * Classe usada para a comunicação entre a view e a classe CandidatoService
- */
 class CandidatoController {
 
     CandidatoService candidatoService = new CandidatoService(new CandidatoDAO())
+    CandidatoDAO candidatoDAO = new CandidatoDAO()
 
-    /**
-     * Recebe os dados do candidato passados pelo usuário na view e cria um objeto do tipo Candidato
-     * @param nome: nome do candidato
-     * @param email: email do candidato
-     * @param idade: idade do candidato
-     * @param cpf: cpf do candidato
-     * @param cep: cep do candidato
-     * @param descricaoPessoal: descrição pessoal do candidato
-     * @param competencias: lista de competências do candidato
-     */
-    void recebeDados(String nome, email, int idade, long cpf, int cep, String descricaoPessoal, List competencias) {
+    void recebeDadosCandidatos(nome, email, dataNascimento, cpf, cep, String pais, descricaoPessoal, senha) {
 
         Candidato candidato = new Candidato()
 
         candidato.nome = nome
         candidato.email = email
-        candidato.idade = idade
+        candidato.dataNascimento = dataNascimento
         candidato.cpf = cpf
         candidato.cep = cep
+        candidato.pais = pais
         candidato.descricaoPessoal = descricaoPessoal
-        candidato.competencias = competencias
+        candidato.senha = senha
 
         candidatoService.validaDadosCadastroCandidato(candidato)
-
     }
-    /**
-    * Recebe a lista de candidatos formatada pela classe CandidatoService
-    */
+
+    void recebeDadosCompetenciasCandidato(long cpf, List listaDeCompetencias) {
+
+        Competencia competencia = new Competencia()
+        for(int posicao = 0; posicao < listaDeCompetencias.size(); posicao++) {
+            competencia.nome = listaDeCompetencias[posicao]
+            candidatoDAO.inserirCompetenciaCandidato(cpf, competencia)
+        }
+    }
+
     void listaCandidatos() {
-            candidatoService.formataLeituraCandidatos()
+        candidatoService.formataLeituraCandidatos()
+    }
+
+    void perfilCandidato(cpf) {
+        candidatoService.validaEFormataLeituraPerfilCandidato(cpf)
+    }
+
+    void curtirVaga(long cpf, int idVaga) {
+        candidatoService.validaCurtidaDoCadidato(cpf, idVaga)
+    }
+
+    void listaMatchsCandidato(long cpf) {
+        candidatoService.formataLeituraListaDeMathcs(cpf)
     }
 }

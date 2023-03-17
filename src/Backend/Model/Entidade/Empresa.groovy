@@ -1,22 +1,18 @@
 package Backend.Model.Entidade
 
-/**
- * Classe responsável pela definição do objeto do tipo Empresa
- */
 class Empresa {
-    String nome, emailCorporativo, estado, pais, descricao
+    String nome, emailCorporativo, pais, descricao, senha
     long cnpj
-    int cep
-
+    int id, cep
 
     @Override
     String toString() {
-        return nome + ';' +
-                emailCorporativo + ';' +
-                cnpj + ';' +
-                cep + ';' +
-                estado + ';' +
-                pais + ';' +
+        return id + " - " +
+                nome + ' - ' +
+                emailCorporativo + ' - ' +
+                cnpj + ' - ' +
+                cep + ' - ' +
+                pais + ' - ' +
                 descricao
     }
 }
