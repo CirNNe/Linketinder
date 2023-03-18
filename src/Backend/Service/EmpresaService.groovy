@@ -18,7 +18,7 @@ class EmpresaService {
             empresa.cnpj.toString().replaceAll(/[^\d]/, '').matches(/^\d{14}$/) &&
             empresa.cep.toString().replaceAll("[^0-9]", "").matches(/[0-9]{8}/) &&
             empresa.pais.matches(/^[a-zA-Z]+$/) &&
-            empresa.descricao.isEmpty() &&
+            !empresa.descricao.isEmpty() &&
             empresa.senha.matches(/(?=.*[A-Z])(?=.*[!@#$%^&*\-\\+])(?=.*[0-9]).{8,}/)) {
 
             this.empresaDAO.inserirDadosNaTabelaEmpresas(empresa)

@@ -42,10 +42,11 @@ pode curtir o perfil de um candidato e, também, o candidato pode curtir uma vag
                               contendo o id do candidato e o id da empresa, que será salvo nessa tabela;
   - tabela curtida_empresa: ao curtir um candidato, será criado um novo dado, contendo o id da empresa e o id do candidato
                             que foi curtido, que será salvo nessa tabela;
-  - tabela match: quando o sistema validar que existe os valores de curtida do candidato à vaga vinculada
-                  a empresa, salvo na tabela curtida_candidato, e a curtida da empresa ao candidato em questão, salvo na
-                  tabela curtida_empresa, será criado um novo dado, contendo o id do candidato e o id da empresa, nessa
-                  tabela para ser apresentado o match entre os usuários.
+  - tabela pais: contém uma lista de paises.
+- Lógica do Match:
+  - Havendo campos com id do candidato e o id da empresa em ambas as duas tabelas acima, a
+    lista de match's poderá ser acessada na opção listar match no menu do candidato ou
+    empresa.
 
 ![Version](https://img.shields.io/badge/version-v1.2.0-blue)
 - Validação dos Dados dos Usuários Recebidos por Inputs
