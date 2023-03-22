@@ -29,7 +29,23 @@ pode curtir o perfil de um candidato e, também, o candidato pode curtir uma vag
 
 ## 🔖&nbsp; Versão
 
-![Version](https://img.shields.io/badge/version-v1.3.0-blue)
+![Version](https://img.shields.io/badge/version-v3.0.0-blue)
+
+Gradle:
+- Implementação do Gradle ao sistema.
+- Como utilizar o builder:
+  - no terminal:
+    - gradle build (buildar o programa);
+    - gradle run (rodar o programa principal);
+    - gradle test (rodar os testes unitários).
+  - no menu Gradle na IDE:
+    - Tasks -> build -> build (buildar o programa);
+    - Tasks -> application -> run (rodar o programa principal);
+    - Tasks -> verification -> test (rodar os testes unitários).
+
+![Version](https://img.shields.io/badge/version-v2.0.0-blue)
+
+Banco de dados:
 - Adição dos arquivos relacionados ao banco de dados (pasta banco_dados):
   - Comandos SQL da criação das tabelas e inserção de dados
   - Modelagem do banco de dados feito no site https://dbdiagram.io/
@@ -48,14 +64,23 @@ pode curtir o perfil de um candidato e, também, o candidato pode curtir uma vag
     lista de match's poderá ser acessada na opção listar match no menu do candidato ou
     empresa.
 
+![Version](https://img.shields.io/badge/version-v1.3.0-blue)
+
+Regex:
+- Validação dos Dados dos Usuários Recebidos com Regex.
+
 ![Version](https://img.shields.io/badge/version-v1.2.0-blue)
-- Validação dos Dados dos Usuários Recebidos por Inputs
+
+Frontend:
+- Telas de Usuários sem Link com o Backend.
 
 ![Version](https://img.shields.io/badge/version-v1.1.0-blue)
-- Telas de Usuários sem Link com o Backend
+
+Testes Unitários:
+- Implementado testes unitários.
 
 ![Version](https://img.shields.io/badge/version-v1.0.0-blue)
-- Definida a versão base do sistema
+- Definida a versão base do sistema.
 
 ---
 
