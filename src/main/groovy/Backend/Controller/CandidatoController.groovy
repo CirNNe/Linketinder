@@ -1,53 +1,35 @@
 package Backend.Controller
 
-import Backend.Model.DAO.CandidatoDAO
-import Backend.Model.Entidade.Candidato
-import Backend.Model.Entidade.Competencia
-import Backend.Service.CandidatoService
+import Backend.Controller.Inteface.CandidatoControllerInterface
+import Backend.Model.Entidade.Interface.CandidatoInterface
+import Backend.Service.Interface.CandidatoServiceInterface
 
-class CandidatoController {
+class CandidatoController implements CandidatoControllerInterface{
 
-    CandidatoService candidatoService = new CandidatoService(new CandidatoDAO())
-    CandidatoDAO candidatoDAO = new CandidatoDAO()
+    private CandidatoServiceInterface candidatoService
 
-    void recebeDadosCandidatos(nome, email, dataNascimento, cpf, cep, String pais, descricaoPessoal, senha) {
-
-        Candidato candidato = new Candidato()
-
-        candidato.nome = nome
-        candidato.email = email
-        candidato.dataNascimento = dataNascimento
-        candidato.cpf = cpf
-        candidato.cep = cep
-        candidato.pais = pais
-        candidato.descricaoPessoal = descricaoPessoal
-        candidato.senha = senha
-
-        candidatoService.validaDadosCadastroCandidato(candidato)
+    CandidatoController(CandidatoServiceInterface candidatoService) {
+        this.candidatoService = candidatoService
     }
 
-    void recebeDadosCompetenciasCandidato(long cpf, List listaDeCompetencias) {
-
-        Competencia competencia = new Competencia()
-        for(int posicao = 0; posicao < listaDeCompetencias.size(); posicao++) {
-            competencia.nome = listaDeCompetencias[posicao]
-            candidatoDAO.inserirCompetenciaCandidato(cpf, competencia)
-        }
+    void recebeDadosNovoCandidato(CandidatoInterface candidato) {
+        candidatoService.salvaDadosNovoCandidato(candidato)
     }
 
     void listaCandidatos() {
-        candidatoService.formataLeituraCandidatos()
+        candidatoService.exibeListaCandidatos()
     }
 
-    void perfilCandidato(cpf) {
-        candidatoService.validaEFormataLeituraPerfilCandidato(cpf)
+
+    void exibePerfilCandidato(long cpf) {
+        candidatoService.exibirPerfilCandidato(cpf)
     }
 
     void curtirVaga(long cpf, int idVaga) {
-        candidatoService.validaCurtidaDoCadidato(cpf, idVaga)
+        candidatoService.salvaCurtidaDoCadidato(cpf, idVaga)
     }
 
     void listaMatchsCandidato(long cpf) {
-        candidatoService.formataLeituraListaDeMathcs(cpf)
+        candidatoService.exibeListaMatchsCandidato(cpf)
     }
 }

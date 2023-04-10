@@ -1,47 +1,58 @@
 package Backend.Model.DAO
 
+import Backend.Model.DAO.Interface.CandidatoDAOInterface
+import Backend.Model.DAO.Interface.ConexaoBancoDadosInterface
+import Backend.Model.DAO.Interface.GenericDAOInterface
+import Backend.Model.DAO.Interface.PaisDAOInterface
+import Backend.Model.DAO.Interface.VagaDAOInterface
 import Backend.Model.Entidade.Candidato
-import Backend.Model.Entidade.Competencia
+import Backend.Model.Entidade.Interface.CandidatoInterface
 import Backend.Model.Entidade.Match
+import java.sql.Connection
 import java.sql.Date
 import java.sql.PreparedStatement
-import java.sql.Connection
 import java.sql.ResultSet
+import java.sql.SQLException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
-class CandidatoDAO extends GenericDAO<Candidato> {
+class CandidatoDAO implements CandidatoDAOInterface {
 
-    VagaDAO vagaDAO = new VagaDAO()
+    private ConexaoBancoDadosInterface conexaoBancoDados
+    private GenericDAOInterface genericDAO
+    private VagaDAOInterface vagaDAO
+    private PaisDAOInterface paisDAO
 
-    Object buscaIdCandidato(long cpf) {
+    CandidatoDAO(ConexaoBancoDadosInterface conexaoBancoDados, GenericDAOInterface genericDAO, VagaDAOInterface vagaDAO,
+                 PaisDAOInterface paisDAO) {
+        this.conexaoBancoDados = conexaoBancoDados
+        this.genericDAO = genericDAO
+        this.vagaDAO = vagaDAO
+        this.paisDAO = paisDAO
+    }
 
+    Integer buscaIdCandidato(long cpf) {
         try {
             String sql = "SELECT id FROM candidatos WHERE cpf = ?"
-
-            return super.buscaIdUsuario(sql, cpf)
-
+            return genericDAO.buscaIdUsuarioGeneric(sql, cpf)
         } catch (Exception e) {
-            println("Erro ao tentar encontrar o id do Candidato." + e)
-            return null
+            throw new Exception("Erro ao tentar encontrar o id do Candidato." + e)
         }
     }
 
-    List<Candidato> listarDadosDaTabelaCandidatos() {
-
+    List<CandidatoInterface> buscaListaCandidatos() {
         String sql = "SELECT c.id, c.nome, c.data_nascimento, c.email, c.cpf, c.cep, (SELECT p.nome FROM pais AS p WHERE p.id = c.id_pais) AS pais, c.descricao_pessoal, array_agg(comp.nome) as competencias " +
                 "FROM candidatos AS c " +
                 "INNER JOIN competencias AS comp ON c.id = comp.id_candidato " +
                 "GROUP BY c.id, c.nome, c.data_nascimento, c.email, c.cpf, c.cep, pais, c.descricao_pessoal ORDER BY c.id ASC"
-
-        try (Connection conexao = super.conectar()
+        try (Connection conexao = conexaoBancoDados.conectar()
              PreparedStatement candidatos = conexao.prepareStatement(sql)
              ResultSet resultSet = candidatos.executeQuery()) {
 
-            List<Candidato> listaDeCandidatos = new ArrayList<>()
+            List<CandidatoInterface> listaDeCandidatos = new ArrayList<>()
 
             while (resultSet.next()) {
-                Candidato candidato = new Candidato()
+                CandidatoInterface candidato = new Candidato()
                 candidato.setId(resultSet.getInt("id"))
                 candidato.setNome(resultSet.getString("nome"))
                 candidato.setEmail(resultSet.getString("email"))
@@ -55,34 +66,23 @@ class CandidatoDAO extends GenericDAO<Candidato> {
             }
             return listaDeCandidatos
         } catch (Exception e) {
-            e.printStackTrace()
-            if (e instanceof ClassNotFoundException) {
-                System.err.println("Verifique o driver de conexão.")
-            } else {
-                System.err.println("Verifique se o servidor está ativo.")
-            }
-            System.exit(-42)
-            return null
+            throw SQLException("Erro ao tentar buscar lista de candidatos: " + e)
         }
     }
 
-    Candidato lePerfilUnicoCandidato(long cpf) {
-
-        String sql = "SELECT c.id, c.nome, c.data_nascimento, c.email, c.cpf, (SELECT p.nome FROM pais AS p WHERE p.id = c.id_pais) AS pais, c.cep, c.descricao_pessoal, array_agg(comp.nome) as competencias " +
+    Candidato buscaPerfilUnicoCandidato(long cpf) {
+        String sql = "SELECT c.id, c.nome, c.data_nascimento, c.email, c.cpf, (SELECT p.nome FROM pais AS p WHERE p.id = c.id_pais) AS pais, c.cep, c.descricao_pessoal, array_agg(comp.nome) AS competencias " +
                         "FROM candidatos AS c " +
                         "INNER JOIN competencias AS comp ON c.id = comp.id_candidato " +
                         "WHERE c.cpf = ? " +
                         "GROUP BY c.id, c.nome, c.data_nascimento, c.email, c.cpf, c.cep, pais, c.descricao_pessoal"
-
-        try (Connection conexao = super.conectar()
-             PreparedStatement perfilCandidato = conexao.prepareStatement(sql)
-             ) {
+        try (Connection conexao = conexaoBancoDados.conectar()
+             PreparedStatement perfilCandidato = conexao.prepareStatement(sql)) {
 
             perfilCandidato.setLong(1, cpf)
             ResultSet resultSet = perfilCandidato.executeQuery()
 
-            Candidato candidato = new Candidato()
-
+            CandidatoInterface candidato = new Candidato()
             while (resultSet.next()) {
                 candidato.setId(resultSet.getInt("id"))
                 candidato.setNome(resultSet.getString("nome"))
@@ -96,24 +96,15 @@ class CandidatoDAO extends GenericDAO<Candidato> {
             }
             return candidato
         } catch (Exception e) {
-            e.printStackTrace()
-            if (e instanceof ClassNotFoundException) {
-                System.err.println("Verifique o driver de conexão.")
-            } else {
-                System.err.println("Verifique se o servidor está ativo.")
-            }
-            System.exit(-42)
-            return null
+            throw new Exception("Erro ao tentar ler perfil do candidato " + e)
         }
     }
 
-    boolean inserirDadosNaTabelaCanidatos(Candidato candidato) {
-
+    boolean insereDadosCandidato(CandidatoInterface candidato) {
         String sql = "INSERT INTO candidatos(nome, data_nascimento, email, cpf, id_pais, cep, descricao_pessoal, senha) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?)"
-
-        try (Connection conexao = super.conectar()
-             PreparedStatement inserirCandidato = conexao.prepareStatement(sql)) {
+        try(Connection conexao = conexaoBancoDados.conectar()
+            PreparedStatement inserirCandidato = conexao.prepareStatement(sql)) {
 
             inserirCandidato.setString(1, candidato.nome)
 
@@ -124,7 +115,7 @@ class CandidatoDAO extends GenericDAO<Candidato> {
             inserirCandidato.setString(3, candidato.email)
             inserirCandidato.setLong(4, candidato.cpf)
 
-            int idPais = buscaIdPais(candidato.pais) as int
+            Integer idPais = paisDAO.buscaIdPais(candidato.pais)
             inserirCandidato.setInt(5, idPais)
 
             inserirCandidato.setInt(6, candidato.cep)
@@ -132,40 +123,18 @@ class CandidatoDAO extends GenericDAO<Candidato> {
             inserirCandidato.setString(8, candidato.senha)
 
             inserirCandidato.execute()
+            inserirCandidato.close()
             return true
         } catch (Exception e) {
-            e.printStackTrace()
-            if (e instanceof ClassNotFoundException) {
-                System.err.println("Verifique o driver de conexão.")
-            } else {
-                System.err.println("Verifique se o servidor está ativo.")
-            }
-            System.exit(-42)
-            return null
+            throw new SQLException("Erro ao tentar inserir candidato no banco de dados " + e)
         }
     }
 
-    Object inserirCompetenciaCandidato(long cpf, Competencia competencia) {
-
-        try {
-
-            int id = buscaIdCandidato(cpf) as int
-
-            String sql = "INSERT INTO competencias(nome, id_candidato) VALUES(?, ?)"
-
-            return super.inserirDadosNaTebelaCompetencias(sql, id, competencia)
-        } catch (Exception e) {
-            println("Erro ao tentar completar o cadastro. " + e)
-            return null
-        }
-    }
-
-    boolean inserirCurtidaVaga(long cpf, int idVaga) {
-
+    boolean insereCurtiAVaga(long cpf, int idVaga) {
         String sql = "INSERT INTO curtida_candidato(id_candidato, id_empresa) VALUES(?, ?)"
 
-        try (Connection conexao = super.conectar()
-             PreparedStatement inserirCurtidaCandidato = conexao.prepareStatement(sql)) {
+        try(Connection conexao = conexaoBancoDados.conectar()
+            PreparedStatement inserirCurtidaCandidato = conexao.prepareStatement(sql)) {
 
             int idCandidato = buscaIdCandidato(cpf) as int
             int idEmpresa = vagaDAO.buscaIdEmpresaResponsavelVaga(idVaga) as int
@@ -176,28 +145,19 @@ class CandidatoDAO extends GenericDAO<Candidato> {
             inserirCurtidaCandidato.execute()
             return true
         } catch (Exception e) {
-            e.printStackTrace()
-            if (e instanceof ClassNotFoundException) {
-                System.err.println("Verifique o driver de conexão.")
-            } else {
-                System.err.println("Verifique se o servidor está ativo.")
-            }
-            System.exit(-42)
-            return null
+            throw SQLException("Erro ao tentar inserir curtida à vaga " + e)
         }
     }
 
-    List<Match> leMatchsCandidato(long cpf) {
-
+    List<Match> buscaMatchsCandidato(long cpf) {
         String sql = "SELECT DISTINCT c.nome as nome_candidato, e.nome as nome_empresa " +
                 "FROM curtida_candidato cc " +
                 "JOIN candidatos c ON cc.id_candidato = c.id " +
                 "JOIN curtida_empresa ce ON cc.id_candidato = ce.id_candidato AND cc.id_empresa = ce.id_empresa " +
                 "JOIN empresas e ON ce.id_empresa = e.id " +
                 "WHERE c.id = ?"
-
-        try (Connection conexao = super.conectar()
-             PreparedStatement matchs = conexao.prepareStatement(sql)) {
+        try(Connection conexao = conexaoBancoDados.conectar()
+            PreparedStatement matchs = conexao.prepareStatement(sql)) {
 
             int idCandidato = buscaIdCandidato(cpf) as int
 
@@ -213,14 +173,7 @@ class CandidatoDAO extends GenericDAO<Candidato> {
             }
             return listaMatchs
         } catch (Exception e) {
-            e.printStackTrace()
-            if (e instanceof ClassNotFoundException) {
-                System.err.println("Verifique o driver de conexão.")
-            } else {
-                System.err.println("Verifique se o servidor está ativo.")
-            }
-            System.exit(-42)
-            return null
+            throw SQLException("Erro ao tentar ler os matchs do candidato " + e)
         }
     }
 }

@@ -1,63 +1,55 @@
 package Backend.Model.DAO
 
-import Backend.Model.Entidade.Competencia
+import Backend.Model.DAO.Interface.ConexaoBancoDadosInterface
+import Backend.Model.DAO.Interface.EmpresaDAOInterface
+import Backend.Model.DAO.Interface.GenericDAOInterface
+import Backend.Model.DAO.Interface.PaisDAOInterface
+import Backend.Model.DAO.Interface.VagaDAOInterface
+import Backend.Model.Entidade.Interface.VagaInterface
 import Backend.Model.Entidade.Vaga
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
+import java.sql.SQLException
 
-class VagaDAO extends GenericDAO<Vaga>{
+class VagaDAO implements VagaDAOInterface {
 
-    EmpresaDAO empresaDAO = new EmpresaDAO()
+    private GenericDAOInterface genericDAO
+    private EmpresaDAOInterface empresaDAO
+    private PaisDAOInterface paisDAO
+    private ConexaoBancoDadosInterface conexaoBancoDados
 
-    boolean inserirDadosNaTabelaVagas(long cnpj, Vaga vaga) {
+    VagaDAO(GenericDAOInterface genericDAO, EmpresaDAOInterface empresaDAO, PaisDAOInterface paisDAO,
+            ConexaoBancoDadosInterface conexaoBancoDados) {
+        this.genericDAO = genericDAO
+        this.empresaDAO = empresaDAO
+        this.paisDAO = paisDAO
+        this.conexaoBancoDados = conexaoBancoDados
+    }
 
+    boolean insereDadosVagas(long cnpj, VagaInterface vaga) {
         String sql = "INSERT INTO vagas(nome, descricao_vaga, id_empresa, id_pais) " +
                 "VALUES(?, ?, ?, ?)"
+        try(Connection conexao = conexaoBancoDados.conectar()
+            PreparedStatement inserirVaga = conexao.prepareStatement(sql)) {
 
-        try (Connection conexao = super.conectar()
-             PreparedStatement inserirVaga = conexao.prepareStatement(sql)) {
-
-            int id = empresaDAO.buscaIdEmpresa(cnpj) as int
-            int idPais = buscaIdPais(vaga.pais) as int
+            Integer idEmpresa = empresaDAO.buscaIdEmpresa(cnpj)
+            Integer idPais = paisDAO.buscaIdPais(vaga.pais)
 
             inserirVaga.setString(1, vaga.nome)
             inserirVaga.setString(2, vaga.descricao)
-            inserirVaga.setInt(3, id)
+            inserirVaga.setInt(3, idEmpresa)
             inserirVaga.setInt(4, idPais)
 
             inserirVaga.execute()
+            inserirVaga.close()
             return true
         } catch (Exception e) {
-            e.printStackTrace()
-            if (e instanceof ClassNotFoundException) {
-                System.err.println("Verifique o driver de conexão.")
-            } else {
-                System.err.println("Verifique se o servidor está ativo.")
-            }
-            System.exit(-42)
-            return null
+            throw new SQLException("Erro ao tentar inserir vaga no banco de dados: " + e)
         }
     }
 
-    boolean inserirDadosNaTebelaCompetenciasVaga(long cnpj, Competencia competencia) {
-
-        try {
-
-            int id = buscaIdVaga(cnpj) as int
-
-            String sql = "INSERT INTO competencias(nome, id_vagas) VALUES(?, ?)"
-
-            return super.inserirDadosNaTebelaCompetencias(sql, id, competencia)
-
-        } catch (Exception e) {
-            println("Erro ao tentar completar o cadastro. " + e)
-            return null
-        }
-    }
-
-    List<Vaga> leVagasDaEmpresa(long cnpj) {
-
+    List<VagaInterface> buscaVagasDaEmpresa(long cnpj) {
         String sql = "SELECT v.id, v.nome, v.descricao_vaga, e.nome AS empresa_nome, p.nome AS pais, array_agg(comp.nome) as competencias " +
                 "FROM vagas AS v " +
                 "INNER JOIN empresas AS e ON e.id = v.id_empresa " +
@@ -65,18 +57,16 @@ class VagaDAO extends GenericDAO<Vaga>{
                 "INNER JOIN competencias AS comp ON comp.id_vagas = v.id " +
                 "WHERE e.cnpj = ? " +
                 "GROUP BY v.id, v.nome, v.descricao_vaga, e.nome, p.nome"
-
-        try (Connection conexao = super.conectar()
-             PreparedStatement vagas = conexao.prepareStatement(sql)) {
+        try(Connection conexao = conexaoBancoDados.conectar()
+            PreparedStatement vagas = conexao.prepareStatement(sql)) {
 
             vagas.setLong(1, cnpj)
-
             ResultSet resultSet = vagas.executeQuery()
 
-            List<Vaga> listaDeVagas = new ArrayList<>()
+            List<VagaInterface> listaDeVagas = new ArrayList<>()
 
             while (resultSet.next()) {
-                Vaga vaga = new Vaga()
+                VagaInterface vaga = new Vaga()
                 vaga.setId(resultSet.getInt("id"))
                 vaga.setNome(resultSet.getString("nome"))
                 vaga.setDescricao(resultSet.getString("descricao_vaga"))
@@ -87,35 +77,25 @@ class VagaDAO extends GenericDAO<Vaga>{
             }
             return listaDeVagas
         } catch (Exception e) {
-            e.printStackTrace()
-            if (e instanceof ClassNotFoundException) {
-                System.err.println("Verifique o driver de conexão.")
-            } else {
-                System.err.println("Verifique se o servidor está ativo.")
-            }
-            System.exit(-42)
-            return null
+            throw new SQLException("Erro ao tentar ler as vagas da empresa: " + e)
         }
-
     }
 
-    List<Vaga> leVagasGerais() {
-
+    List<VagaInterface> buscaVagasGerais() {
         String sql = "SELECT v.id, v.nome, v.descricao_vaga, e.nome AS nome_empresa, p.nome AS pais, array_agg(comp.nome) as competencias " +
                 "FROM vagas AS v " +
                 "INNER JOIN empresas AS e ON e.id = v.id_empresa " +
                 "INNER JOIN pais AS p ON v.id_pais = p.id " +
                 "INNER JOIN competencias AS comp ON comp.id_vagas = v.id " +
                 "GROUP BY v.id, v.nome, v.descricao_vaga, e.nome, p.nome"
+        try(Connection conexao = conexaoBancoDados.conectar()
+            PreparedStatement vagas = conexao.prepareStatement(sql)
+            ResultSet resultSet = vagas.executeQuery()) {
 
-        try (Connection conexao = super.conectar()
-             PreparedStatement vagas = conexao.prepareStatement(sql)
-             ResultSet resultSet = vagas.executeQuery()) {
-
-            List<Vaga> listaDeVagas = new ArrayList<>()
+            List<VagaInterface> listaDeVagas = new ArrayList<>()
 
             while (resultSet.next()) {
-                Vaga vaga = new Vaga()
+                VagaInterface vaga = new Vaga()
                 vaga.setId(resultSet.getInt("id"))
                 vaga.setNome(resultSet.getString("nome"))
                 vaga.setEmpresa(resultSet.getString("nome_empresa"))
@@ -126,77 +106,47 @@ class VagaDAO extends GenericDAO<Vaga>{
             }
             return listaDeVagas
         } catch (Exception e) {
-            e.printStackTrace()
-            if (e instanceof ClassNotFoundException) {
-                System.err.println("Verifique o driver de conexão.")
-            } else {
-                System.err.println("Verifique se o servidor está ativo.")
-            }
-            System.exit(-42)
-            return null
+            throw new SQLException("Erro ao tentar ler as vagas gerais: " + e)
         }
-
     }
 
-    Object buscaIdEmpresaResponsavelVaga(int idVaga) {
-
+    Integer buscaIdEmpresaResponsavelVaga(int idVaga) {
         String sql = "SELECT e.id FROM empresas AS e, vagas AS v WHERE v.id = ? AND e.id = v.id_empresa"
-
-        try (Connection conexao = conectar()
-             PreparedStatement buscarIdEmpresa = conexao.prepareStatement(sql)) {
+        try(Connection conexao = conexaoBancoDados.conectar()
+            PreparedStatement buscarIdEmpresa = conexao.prepareStatement(sql)) {
 
             buscarIdEmpresa.setInt(1, idVaga)
-
             ResultSet resultSet = buscarIdEmpresa.executeQuery()
 
             List<Integer> idDaVaga = new ArrayList()
 
             while (resultSet.next()) {
-                int resultadoIdUsuario =  resultSet.getInt("id")
+                Integer resultadoIdUsuario =  resultSet.getInt("id")
                 idDaVaga.add(resultadoIdUsuario)
             }
-            return idDaVaga[0] as int
+            return idDaVaga[0] as Integer
         } catch (Exception e) {
-            e.printStackTrace()
-            if (e instanceof ClassNotFoundException) {
-                System.err.println("Verifique o driver de conexão.")
-            } else {
-                System.err.println("Verifique se o servidor está ativo.")
-            }
-            System.exit(-42)
-            return null
+            throw new SQLException("Erro ao tentar buscar o id da empresa responsável pela vaga: " + e)
         }
     }
 
-    Object buscaIdVaga(long cnpj) {
+    Integer buscaIdVaga(String nomeVaga) {
+        String sql = "SELECT id FROM vagas WHERE nome = ?"
+        try(Connection conexao = conexaoBancoDados.conectar()
+            PreparedStatement buscarIdVaga = conexao.prepareStatement(sql)) {
 
-        int idEmpresa = empresaDAO.buscaIdEmpresa(cnpj) as int
-
-        String sql = "SELECT v.id FROM vagas AS v, empresas AS e WHERE v.id_empresa = ?"
-
-        try (Connection conexao = conectar()
-             PreparedStatement buscarIdVaga = conexao.prepareStatement(sql)) {
-
-            buscarIdVaga.setInt(1, idEmpresa)
-
+            buscarIdVaga.setString(1, nomeVaga)
             ResultSet resultSet = buscarIdVaga.executeQuery()
 
             List<Integer> idVaga = new ArrayList()
 
             while (resultSet.next()) {
-                int resultadoIdUsuario =  resultSet.getInt("id")
-                idVaga.add(resultadoIdUsuario)
+                int resultadoIdVaga =  resultSet.getInt("id")
+                idVaga.add(resultadoIdVaga)
             }
-            return idVaga[0]
+            return idVaga[0] as Integer
         } catch (Exception e) {
-            e.printStackTrace()
-            if (e instanceof ClassNotFoundException) {
-                System.err.println("Verifique o driver de conexão.")
-            } else {
-                System.err.println("Verifique se o servidor está ativo.")
-            }
-            System.exit(-42)
-            return null
+            throw new SQLException("Erro ao tentar buscar id da vaga: " + e)
         }
     }
 }

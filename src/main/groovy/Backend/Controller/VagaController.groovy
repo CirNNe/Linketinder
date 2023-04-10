@@ -1,40 +1,26 @@
 package Backend.Controller
 
-import Backend.Model.DAO.VagaDAO
-import Backend.Model.Entidade.Competencia
-import Backend.Model.Entidade.Vaga
-import Backend.Service.VagaService
+import Backend.Controller.Inteface.VagaControllerInterface
+import Backend.Model.Entidade.Interface.VagaInterface
+import Backend.Service.Interface.VagaServiceInterface
 
-class VagaController {
+class VagaController implements VagaControllerInterface {
 
-    VagaService vagaService = new VagaService(new VagaDAO())
+    private VagaServiceInterface vagaService
 
-    void recebeDadosVaga(nome, empresa, long cnpj, descricao, pais) {
-
-        Vaga vaga = new Vaga()
-
-        vaga.nome = nome
-        vaga.empresa = empresa
-        vaga.descricao = descricao
-        vaga.pais = pais
-
-        vagaService.validaDadosVaga(cnpj, vaga)
+    VagaController(VagaServiceInterface vagaService) {
+        this.vagaService = vagaService
     }
 
-    void recebeDadosCompetenciasVaga(long cnpj, List listaDeCompetencias) {
-
-        Competencia competencia = new Competencia()
-        for(int posicao = 0; posicao < listaDeCompetencias.size(); posicao++) {
-            competencia.nome = listaDeCompetencias[posicao]
-            vagaService.validaCompetenciasVaga(cnpj, competencia)
-        }
+    void recebeDadosVaga(long cnpj, VagaInterface vaga) {
+        vagaService.salvaDadosNovaVaga(cnpj, vaga)
     }
 
     void listaVagasEmpresa(long cnpj) {
-        vagaService.validaEFormataLeituraVagasDaEmpresa(cnpj)
+        vagaService.exibeListaVagasEmpresa(cnpj)
     }
 
     void listaVagasGerais() {
-        vagaService.formataLeituraVagaGerais()
+        vagaService.exibeListaVagasGerais()
     }
 }

@@ -1,88 +1,135 @@
 package Backend.Service
 
-import Backend.Model.Entidade.Candidato
-import Backend.Model.DAO.CandidatoDAO
+import Backend.Model.DAO.Interface.CandidatoDAOInterface
+import Backend.Model.Entidade.Interface.CandidatoInterface
+import Backend.Model.Entidade.Interface.MatchInterface
+import Backend.Service.Interface.CandidatoServiceInterface
+import Backend.Service.Interface.ValidatorServiceInterface
 
-class CandidatoService {
+class CandidatoService implements CandidatoServiceInterface {
 
-    CandidatoDAO candidatoDAO
+    private CandidatoDAOInterface candidatoDAO
+    private ValidatorServiceInterface validatorService
 
-    CandidatoService(CandidatoDAO candidatoDAO) {
+    CandidatoService(CandidatoDAOInterface candidatoDAO, ValidatorServiceInterface validatorServiceInterface) {
         this.candidatoDAO = candidatoDAO
+        this.validatorService = validatorServiceInterface
     }
 
-    boolean validaDadosCadastroCandidato(Candidato candidato) {
+    boolean salvaDadosNovoCandidato(CandidatoInterface candidato) {
+        try {
+            if(validatorService.validaDadosNovoCandidato(candidato)) {
+                candidatoDAO.insereDadosCandidato(candidato)
+                return true
+            }
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar salvar os dados do novo candidato: " + e)
+        }
+    }
 
-        if(candidato.nome.matches(/^[a-zA-Z ]+$/) &&
-            candidato.email.matches(/\S+@\w+\.\w{2,6}(\.\w{2})?/) &&
-            candidato.dataNascimento.matches(/^(\d{2})-(\d{2})-(\d{4})$/) &&
-            candidato.cpf.toString().replaceAll("[^0-9]", "").matches(/[0-9]{11}/) &&
-            candidato.cep.toString().replaceAll("[^0-9]", "").matches(/[0-9]{8}/) &&
-            candidato.pais.matches(/^[a-zA-Z]+$/) &&
-            !candidato.descricaoPessoal.isEmpty() &&
-            candidato.senha.matches(/(?=.*[A-Z])(?=.*[!@#$%^&*\-\\+])(?=.*[0-9]).{8,}/)) {
-            this.candidatoDAO.inserirDadosNaTabelaCanidatos(candidato)
+    List<CandidatoInterface> recebeListaCandidatos() {
+        try {
+            List<CandidatoInterface> listaDeCandidatos = candidatoDAO.buscaListaCandidatos()
+            return listaDeCandidatos
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar receber a lista de candidatos: " + e)
+        }
+    }
+
+    List formataLeituraListaCandidatos() {
+        List<CandidatoInterface> lista = recebeListaCandidatos()
+        List listaFormatada = new ArrayList()
+
+        for(int posicao = 0; posicao < lista.size(); posicao++) {
+            int id = lista[posicao]['id']
+            String nome = lista[posicao]['nome'] = 'Anônimo'
+            String pais = lista[posicao]['pais']
+            String descricao = lista[posicao]['descricaoPessoal']
+            List competencias = lista[posicao]['competencias'] as List
+            listaFormatada.addAll([["ID: " + id, "Nome: " + nome, "País: " + pais, "Descrição: " + descricao,
+                                    "Competências: " + competencias.toString().replaceAll(/[\[\]{}]/, '')]])
+        }
+        return listaFormatada
+    }
+
+    boolean exibeListaCandidatos() {
+        try {
+            List lista = formataLeituraListaCandidatos()
+            for(int posicao = 0; posicao < lista.size(); posicao++) {
+                println(lista[posicao])
+            }
             return true
-        } else {
-            println("Informações inválidas, por favor, revise os dados e tente novamente.")
-            return false
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar exibir a lista de candidatos: " + e)
         }
     }
 
-    void formataLeituraCandidatos() {
-
-        List<Candidato> listaDeCandidatos = this.candidatoDAO.listarDadosDaTabelaCandidatos()
-
-        for(int posicao = 0; posicao < listaDeCandidatos.size(); posicao++) {
-
-            int id = listaDeCandidatos[posicao]['id'] as int
-            String nome = listaDeCandidatos[posicao]['nome'] = 'Anônimo'
-            String pais = listaDeCandidatos[posicao]['pais']
-            String descricao = listaDeCandidatos[posicao]['descricaoPessoal']
-            List competencias = listaDeCandidatos[posicao]['competencias'] as List
-
-            println('ID: ' + id + ' - ' + 'Nome: ' + nome + ' - ' + ' País: ' + pais + ' - ' +
-                    ' Descrição Pessoal: ' + descricao + ' - ' + ' Competências: ' +
-                    competencias.toString().replaceAll(/[\[\]{}]/, ''))
-
-            println('-' * 50)
-
+    CandidatoInterface recebeDadosCandidato(long cpf){
+        try {
+            if(validatorService.validaCpf(cpf)) {
+                CandidatoInterface candidato = candidatoDAO.buscaPerfilUnicoCandidato(cpf)
+                return candidato
+            }
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar receber os dados do perfil do candidato: " + e)
         }
     }
 
-    void validaEFormataLeituraPerfilCandidato(long cpf) {
-
-        if(cpf.toString().replaceAll("[^0-9]", "").matches(/[0-9]{11}/)) {
-
-            Candidato candidato = this.candidatoDAO.lePerfilUnicoCandidato(cpf)
-
+    boolean exibirPerfilCandidato(long cpf) {
+        try {
+            CandidatoInterface candidato = recebeDadosCandidato(cpf)
             println("ID: " + candidato.id + "\n" + "Nome: " + candidato.nome + "\n" +
                     "E-mail: " + candidato.email + "\n" + "Data de Nascimento: " + candidato.dataNascimento + "\n" +
                     "CPF: " + candidato.cpf + "\n" + "CEP: " + candidato.cep + "\n" + "País: " + candidato.pais + "\n" +
                     "Descrição Pessoal: " + candidato.descricaoPessoal + "\n" +
                     "Competências: " + candidato.competencias.toString().replaceAll(/[\[\]{}]/, ''))
-        } else {
-            println("O dado informado está inválido, por favor, revise e tente novamente.")
+            return true
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar exibir os dados do candidato: " + e)
         }
     }
 
-    void validaCurtidaDoCadidato(long cpf, int idVaga) {
+    boolean salvaCurtidaDoCadidato(long cpf, int idVaga) {
+        try {
+            if(validatorService.validaCpf(cpf) && validatorService.validaIdVaga(idVaga)) {
+                candidatoDAO.insereCurtiAVaga(cpf, idVaga)
+                return true
+            }
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar realizar a curtidada à vaga: " + e)
+        }
+        return false
+    }
 
-        if(cpf.toString().replaceAll("[^0-9]", "").matches(/[0-9]{11}/) &&
-            idVaga > 0) {
-
-            this.candidatoDAO.inserirCurtidaVaga(cpf, idVaga)
-
-        } else {
-            println("Os dados informados estão inválidos, por favor, revise e tente novamente.")
+    List<MatchInterface> recebeListaMatchsCandidato(long cpf) {
+        try {
+            if(validatorService.validaCpf(cpf)) {
+                List<MatchInterface> lista = candidatoDAO.buscaMatchsCandidato(cpf)
+                return lista
+            }
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar receber a lista de matchs do candidato: " + e)
         }
     }
 
-    void formataLeituraListaDeMathcs(long cpf) {
+    List<MatchInterface> formataListaMatchsCandidato(long cpf) {
+        List<MatchInterface> lista =  recebeListaMatchsCandidato(cpf)
+        List listaFormatada = new ArrayList()
+        for(int posicao = 0; posicao < lista.size(); posicao++) {
+            listaFormatada.add(lista[posicao]['nomeEmpresa'])
+        }
+        return listaFormatada
+    }
 
-        List listaMatchs = this.candidatoDAO.leMatchsCandidato(cpf)
-        for(int posicao = 0; posicao < listaMatchs.size(); posicao++) {
-            println("Empresa: " + listaMatchs[posicao]['nomeEmpresa'] + "\n")
+    boolean exibeListaMatchsCandidato(long cpf) {
+        try {
+            List lista = formataListaMatchsCandidato(cpf)
+            for(int posicao = 0; posicao < lista.size(); posicao++) {
+                println("Empresa: " + lista[posicao] + "\n")
+            }
+            return true
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar exibir a lista de matchs: " + e)
         }
     }
 }

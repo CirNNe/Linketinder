@@ -1,47 +1,55 @@
 package Backend.Model.DAO
 
+import Backend.Model.DAO.Interface.ConexaoBancoDadosInterface
+import Backend.Model.DAO.Interface.EmpresaDAOInterface
+import Backend.Model.DAO.Interface.GenericDAOInterface
+import Backend.Model.DAO.Interface.PaisDAOInterface
 import Backend.Model.Entidade.Empresa
+import Backend.Model.Entidade.Interface.EmpresaInterface
+import Backend.Model.Entidade.Interface.MatchInterface
 import Backend.Model.Entidade.Match
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
+import java.sql.SQLException
 
-class EmpresaDAO extends GenericDAO<Empresa> {
+class EmpresaDAO implements EmpresaDAOInterface{
 
-    Object buscaIdEmpresa(long cnpj) {
+    private ConexaoBancoDadosInterface conexaoBancoDados
+    private GenericDAOInterface genericDAO
+    private PaisDAOInterface paisDAO
 
-        try {
-            String sql = "SELECT id FROM empresas WHERE cnpj = ?"
-
-            return super.buscaIdUsuario(sql, cnpj)
-
-        } catch (Exception e) {
-            println("Erro ao tentar encontrar o id da Empresa." + e)
-            return null
-        }
-
+    EmpresaDAO(ConexaoBancoDadosInterface conexaoBancoDados, GenericDAOInterface genericDAO, PaisDAOInterface paisDAO) {
+        this.conexaoBancoDados = conexaoBancoDados
+        this.genericDAO = genericDAO
+        this.paisDAO = paisDAO
     }
 
-    Empresa lePerfilUnicoEmpresa(long cnpj) {
+    Integer buscaIdEmpresa(long cnpj) {
+        try {
+            String sql = "SELECT id FROM empresas WHERE cnpj = ?"
+            return genericDAO.buscaIdUsuarioGeneric(sql, cnpj)
+        } catch (Exception e) {
+            throw new SQLException("Erro ao tentar encontrar id da empresa: " + e)
+        }
+    }
 
+    Empresa buscaPerfilUnicoEmpresa(long cnpj) {
         String sql = "SELECT e.id, e.nome, e.email, e.cnpj, e.cep, p.nome AS pais, e.descricao_empresa " +
                 "FROM empresas AS e, pais AS p " +
                 "WHERE e.cnpj = ? AND e.id_pais = p.id " +
                 "GROUP BY e.id, e.nome, e.email, e.cnpj, e.cep, pais, e.descricao_empresa ORDER BY e.id ASC"
+        try(Connection conexao = conexaoBancoDados.conectar()
+            PreparedStatement perfilEmpresa = conexao.prepareStatement(sql)) {
 
-        try (Connection conexao = super.conectar()
-             PreparedStatement empresas = conexao.prepareStatement(sql)) {
+            perfilEmpresa.setLong(1, cnpj)
+            ResultSet resultSet = perfilEmpresa.executeQuery()
 
-            empresas.setLong(1, cnpj)
-
-            ResultSet resultSet = empresas.executeQuery()
-
-            Empresa empresa = new Empresa()
-
+            EmpresaInterface empresa = new Empresa()
             while (resultSet.next()) {
                 empresa.setId(resultSet.getInt("id"))
                 empresa.setNome(resultSet.getString("nome"))
-                empresa.setEmailCorporativo(resultSet.getString("email"))
+                empresa.setEmail(resultSet.getString("email"))
                 empresa.setCnpj(resultSet.getLong("cnpj"))
                 empresa.setCep(resultSet.getInt("cep"))
                 empresa.setPais(resultSet.getString("pais"))
@@ -49,56 +57,39 @@ class EmpresaDAO extends GenericDAO<Empresa> {
             }
             return empresa
         } catch (Exception e) {
-            e.printStackTrace()
-            if (e instanceof ClassNotFoundException) {
-                System.err.println("Verifique o driver de conexão.")
-            } else {
-                System.err.println("Verifique se o servidor está ativo.")
-            }
-            System.exit(-42)
-            return null
+            throw new SQLException("Erro ao tentar encontrar a empresa no banco de dados: " + e)
         }
     }
 
-    boolean inserirDadosNaTabelaEmpresas(Empresa empresa) {
-
+    boolean insereDadosEmpresas(EmpresaInterface empresa) {
         String sql = "INSERT INTO empresas(nome, cnpj, email, descricao_empresa, id_pais, cep, senha) " +
                 "VALUES(?, ?, ?, ?, ?, ?, ?)"
-
-        try (Connection conexao = super.conectar()
-             PreparedStatement inserirEmpresa = conexao.prepareStatement(sql)) {
+        try(Connection conexao = conexaoBancoDados.conectar()
+            PreparedStatement inserirEmpresa = conexao.prepareStatement(sql)) {
 
             inserirEmpresa.setString(1, empresa.nome)
             inserirEmpresa.setLong(2, empresa.cnpj)
-            inserirEmpresa.setString(3, empresa.emailCorporativo)
+            inserirEmpresa.setString(3, empresa.email)
             inserirEmpresa.setString(4, empresa.descricao)
 
-            int idPais = buscaIdPais(empresa.pais) as int
+            Integer idPais = paisDAO.buscaIdPais(empresa.getPais())
             inserirEmpresa.setInt(5, idPais)
 
             inserirEmpresa.setInt(6, empresa.cep)
             inserirEmpresa.setString(7, empresa.senha)
 
             inserirEmpresa.execute()
+            inserirEmpresa.close()
             return true
         } catch (Exception e) {
-            e.printStackTrace()
-            if (e instanceof ClassNotFoundException) {
-                System.err.println("Verifique o driver de conexão.")
-            } else {
-                System.err.println("Verifique se o servidor está ativo.")
-            }
-            System.exit(-42)
-            return null
+            throw new SQLException("Erro ao tentar inserir dados da empresa no banco de daddos: " + e)
         }
     }
 
-    boolean inserirCurtidaCandidato(long cnpj, int idCandidato) {
-
+    boolean insereCurtidaACandidato(long cnpj, int idCandidato) {
         String sql = "INSERT INTO curtida_empresa(id_empresa, id_candidato) VALUES(?, ?)"
-
-        try (Connection conexao = super.conectar()
-             PreparedStatement inserirCurtidaEmpresa = conexao.prepareStatement(sql)) {
+        try(Connection conexao = conexaoBancoDados.conectar()
+            PreparedStatement inserirCurtidaEmpresa = conexao.prepareStatement(sql)) {
 
             int idEmpresa = buscaIdEmpresa(cnpj) as int
 
@@ -108,52 +99,34 @@ class EmpresaDAO extends GenericDAO<Empresa> {
             inserirCurtidaEmpresa.execute()
             return true
         } catch (Exception e) {
-            e.printStackTrace()
-            if (e instanceof ClassNotFoundException) {
-                System.err.println("Verifique o driver de conexão.")
-            } else {
-                System.err.println("Verifique se o servidor está ativo.")
-            }
-            System.exit(-42)
-            return null
+            throw new SQLException("Erro ao tentar inserir curtida da empresa no banco de dados: " + e)
         }
-
     }
 
-    List<Match> listarMatchsEmpresa(long cnpj) {
-
+    List<Match> buscaMatchsEmpresa(long cnpj) {
         String sql = "SELECT DISTINCT c.nome as nome_candidato, e.nome as nome_empresa " +
                 "FROM curtida_candidato cc " +
                 "JOIN candidatos c ON cc.id_candidato = c.id " +
                 "JOIN curtida_empresa ce ON cc.id_candidato = ce.id_candidato AND cc.id_empresa = ce.id_empresa " +
                 "JOIN empresas e ON ce.id_empresa = e.id " +
                 "WHERE e.id = ?"
-
-        try (Connection conexao = super.conectar()
-             PreparedStatement matchs = conexao.prepareStatement(sql)) {
+        try(Connection conexao = conexaoBancoDados.conectar()
+            PreparedStatement matchs = conexao.prepareStatement(sql)) {
 
             int idEmpresa = buscaIdEmpresa(cnpj) as int
-
             matchs.setInt(1, idEmpresa)
             ResultSet resultSet = matchs.executeQuery()
 
             List<Match> listaMatchs = new ArrayList()
 
             while (resultSet.next()) {
-                Match match = new Match()
+                MatchInterface match = new Match()
                 match.setNomeCandidato(resultSet.getString("nome_candidato"))
                 listaMatchs.add(match)
             }
             return listaMatchs
         } catch (Exception e) {
-            e.printStackTrace()
-            if (e instanceof ClassNotFoundException) {
-                System.err.println("Verifique o driver de conexão.")
-            } else {
-                System.err.println("Verifique se o servidor está ativo.")
-            }
-            System.exit(-42)
-            return null
+            throw new SQLException("Erro ao tentar ler os matchs da empresa: " + e)
         }
     }
 }

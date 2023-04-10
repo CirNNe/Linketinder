@@ -1,6 +1,8 @@
 package Backend.Model.Entidade
 
-class Competencia {
+import Backend.Model.Entidade.Interface.CompetenciaInterface
+
+class Competencia implements CompetenciaInterface{
 
     String nome
 

@@ -1,38 +1,30 @@
 package Backend.Controller
 
-import Backend.Model.DAO.EmpresaDAO
-import Backend.Model.Entidade.Empresa
-import Backend.Service.EmpresaService
+import Backend.Controller.Inteface.EmpresaControllerInterface
+import Backend.Model.Entidade.Interface.EmpresaInterface
+import Backend.Service.Interface.EmpresaServiceInterface
 
-class EmpresaController {
+class EmpresaController implements EmpresaControllerInterface{
 
-    EmpresaService empresaService = new EmpresaService(new EmpresaDAO())
+    private EmpresaServiceInterface empresaService
 
-    void recebeDados(String nome, String emailCorporativo, long cnpj, int cep, String pais, String descricao, String senha) {
+    EmpresaController(EmpresaServiceInterface empresaService) {
+        this.empresaService = empresaService
+    }
 
-        Empresa empresa = new Empresa()
-
-        empresa.nome = nome
-        empresa.emailCorporativo = emailCorporativo
-        empresa.cnpj = cnpj
-        empresa.cep = cep
-        empresa.pais = pais
-        empresa.descricao = descricao
-        empresa.senha = senha
-
-        empresaService.validaDadosCadastroEmpresa(empresa)
-
+    void recebeDadosNovaEmpresa(EmpresaInterface empresa) {
+        empresaService.salvaDadosNovaEmpresa(empresa)
     }
 
     void perfilEmpresa(long cnpj) {
-        empresaService.validaEFormataLeituraEmpresa(cnpj)
+        empresaService.exibeEmpresa(cnpj)
     }
 
     void curtirCandidato(long cnpj, int idCandidato) {
-        empresaService.validaCurtidaEmpresa(cnpj, idCandidato)
+        empresaService.salvaCurtidaEmpresa(cnpj, idCandidato)
     }
 
     void listaMatchsEmpresa(long cnpj) {
-        empresaService.formataLeituraMatchEmpresa(cnpj)
+        empresaService.exibeListaMatchsEmpresa(cnpj)
     }
 }

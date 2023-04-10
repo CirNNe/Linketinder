@@ -1,79 +1,72 @@
 package Backend.Service
 
-import Backend.Model.DAO.VagaDAO
-import Backend.Model.Entidade.Competencia
-import Backend.Model.Entidade.Vaga
+import Backend.Model.DAO.Interface.VagaDAOInterface
+import Backend.Model.Entidade.Interface.VagaInterface
+import Backend.Service.Interface.VagaServiceInterface
+import Backend.Service.Interface.ValidatorServiceInterface
 
-class VagaService {
+class VagaService implements VagaServiceInterface {
 
-    VagaDAO vagaDAO
+    private VagaDAOInterface vagaDAO
+    private ValidatorServiceInterface validatorService
 
-    VagaService(VagaDAO vagaDAO) {
+    VagaService(VagaDAOInterface vagaDAO, ValidatorServiceInterface validatorService) {
         this.vagaDAO = vagaDAO
+        this.validatorService = validatorService
     }
 
-    void validaDadosVaga(long cnpj, Vaga vaga) {
-
-        if(!vaga.nome.isEmpty() &&
-            !vaga.empresa.isEmpty() &&
-            !vaga.descricao.isEmpty() &&
-            !vaga.pais.isEmpty() &&
-            cnpj.toString().replaceAll(/[^\d]/, '').matches(/^\d{14}$/)) {
-
-            vagaDAO.inserirDadosNaTabelaVagas(cnpj, vaga)
-        }
-    }
-
-    void validaCompetenciasVaga(long cnpj, Competencia competencia) {
-
-        if(cnpj.toString().replaceAll(/[^\d]/, '').matches(/^\d{14}$/) &&
-            !competencia.nome.isEmpty()) {
-
-            this.vagaDAO.inserirDadosNaTebelaCompetenciasVaga(cnpj, competencia)
-        } else  {
-            println("Os dados informados estão inválidos, por favor, revise e tente novamente.")
-        }
-    }
-
-    void validaEFormataLeituraVagasDaEmpresa(long cnpj) {
-
-        if(cnpj.toString().replaceAll(/[^\d]/, '').matches(/^\d{14}$/)) {
-
-            List listaDeVagas = this.vagaDAO.leVagasDaEmpresa(cnpj)
-
-            for(int posicao = 0; posicao < listaDeVagas.size(); posicao++) {
-
-                println("ID: " + listaDeVagas[posicao]['id'] + " - " +
-                        "Nome: " + listaDeVagas[posicao]['nome'] + " - " +
-                        "Empresa: " + listaDeVagas[posicao]['empresa'] + " - " +
-                        "Descrição: " + listaDeVagas[posicao]['descricao'] + " - " +
-                        "País: " + listaDeVagas[posicao]['pais'] + " - " +
-                        "Competências: " + listaDeVagas[posicao]['competencias'].toString().replaceAll(/[\[\]{}]/, ''))
-
-                println('-' * 50)
-
+    boolean salvaDadosNovaVaga(long cnpj, VagaInterface vaga) {
+        try {
+            if(validatorService.validaDadosNovaVaga(vaga)) {
+                vagaDAO.insereDadosVagas(cnpj, vaga)
+                return true
             }
-        } else {
-            println("O dado informado está inválido, por favor, revise e tente novamente.")
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar salvar os dados da nova vaga: " + e)
         }
     }
 
-    void formataLeituraVagaGerais() {
+    List<VagaInterface> recebeListaVagasEmpresa(long cnpj) {
+        try {
+            List<VagaInterface> lista = vagaDAO.buscaVagasDaEmpresa(cnpj)
+            return lista
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar receber a lista de vagas da empresa: " + e)
+        }
+    }
 
-        List vagas = this.vagaDAO.leVagasGerais()
+    boolean exibeListaVagasEmpresa(long cnpj) {
+        try {
+            List<VagaInterface> lista = recebeListaVagasEmpresa(cnpj)
+            for(int posicao = 0; posicao < lista.size(); posicao++) {
+                println(lista[posicao])
+                println('-' * 100)
+            }
+            return true
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar exibir a lista de vagas da empresa: " + e)
+        }
+    }
 
-        for(int posicao = 0; posicao < vagas.size(); posicao++) {
-            int id = vagas[posicao]['id'] as int
-            String nome = vagas[posicao]['nome']
-            String empresa = vagas[posicao]['empresa'] = "Anônimo"
-            String descricao = vagas[posicao]['descricao']
-            String pais = vagas[posicao]['pais']
-            List competencias = vagas[posicao]['competencias'] as List
+    List<VagaInterface> recebeListaVagasGerais() {
+        try {
+            List<VagaInterface> lista = vagaDAO.buscaVagasGerais()
+            return lista
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar receber a lista de vagas gerais: " + e)
+        }
+    }
 
-            println("ID: " + id + " - " + "Nome: " + nome + " - " +
-                    "Empresa: " + empresa + " - " + "Descrição: " +
-                    descricao + " - " + "País: " + pais + " - " +
-                    "Competências: " + competencias.toString().replaceAll(/[\[\]{}]/, ''))
+    boolean exibeListaVagasGerais() {
+        try {
+            List lista = recebeListaVagasGerais()
+            for(int posicao = 0; posicao < lista.size(); posicao++) {
+                println(lista[posicao])
+                println('-' * 100)
+            }
+            return true
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar exibir lista de vagas gerais: " + e)
         }
     }
 }

@@ -42,15 +42,8 @@
 -- CREATE TABLE "competencias" (
 --  "id" SERIAL PRIMARY KEY,
 --  "nome" varchar(100) NOT NULL,
---  "id_candidato" INT REFERENCES candidatos(id) NOT NULL,
---  "id_vagas" INT REFERENCES vagas(id) NOT NULL
--- );
-
--- Modelo de Trabalho:
--- CREATE TABLE "modelo_trabalho" (
---  "id" SERIAL PRIMARY KEY,
---  "nome" varchar(10) NOT NULL,
---  "id_vaga" INT REFERENCES vagas(id) NOT NULL
+--  "id_candidato" INT REFERENCES candidatos(id),
+--  "id_vagas" INT REFERENCES vagas(id)
 -- );
 
 -- Curtida Candidato:
@@ -65,13 +58,6 @@
 --  "id" SERIAL PRIMARY KEY,
 --  "id_empresa" INT REFERENCES empresas(id) NOT NULL,
 --  "id_candidato" INT REFERENCES candidatos(id) NOT NULL
--- );
-
--- Match:
--- CREATE TABLE "match" (
---  "id" SERIAL PRIMARY KEY,
---  "id_candidato" INT REFERENCES candidatos(id) NOT NULL,
---  "id_empresa" INT REFERENCES empresas(id) NOT NULL
 -- );
 
 -- Inserindo Lista Países:
@@ -110,11 +96,3 @@
 --SELECT e.nome AS "Nome Empresa", c.nome AS "Nome Candidato"
 --	FROM curtida_empresa AS ce, empresas AS e, candidatos AS c
 --		WHERE ce.id_empresa = e.id AND ce.id_candidato = c.id;
-
--- Inserindo Match:
--- INSERT INTO match(id_candidato, id_empresa) VALUES(1, 2);
--- INSERT INTO match(id_candidato, id_empresa) VALUES(4, 1);
-
--- SELECT c.nome AS "Nome Candidato", e.nome AS "Nome Empresa"
--- FROM match AS m, candidatos AS c, empresas AS e
--- WHERE m.id_candidato = c.id AND m.id_empresa = e.id;

@@ -1,18 +1,25 @@
 package Backend.Model.Entidade
 
-class Empresa {
-    String nome, emailCorporativo, pais, descricao, senha
+import Backend.Model.Entidade.Interface.EmpresaInterface
+
+class Empresa implements EmpresaInterface {
+    String nome
+    String email
+    String descricao
+    String senha
+    String pais
     long cnpj
-    int id, cep
+    int id
+    int cep
 
     @Override
     String toString() {
-        return id + " - " +
-                nome + ' - ' +
-                emailCorporativo + ' - ' +
-                cnpj + ' - ' +
-                cep + ' - ' +
-                pais + ' - ' +
-                descricao
+        return "ID: " + id + ' - ' +
+                "Nome: " + nome + ' - ' +
+                "E-mail: " + email + ' - ' +
+                "CNPJ: " + cnpj + ' - ' +
+                "CEP: " + cep + ' - ' +
+                "País: " + pais + ' - ' +
+                "Descrição: " + descricao
     }
 }

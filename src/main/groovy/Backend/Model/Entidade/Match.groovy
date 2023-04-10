@@ -1,8 +1,11 @@
 package Backend.Model.Entidade
 
-class Match {
+import Backend.Model.Entidade.Interface.MatchInterface
 
-    String nomeCandidato, nomeEmpresa
+class Match implements MatchInterface {
+
+    String nomeCandidato
+    String nomeEmpresa
 
     @Override
     String toString() {

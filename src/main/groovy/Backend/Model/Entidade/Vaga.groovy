@@ -1,10 +1,15 @@
 package Backend.Model.Entidade
 
-class Vaga {
+import Backend.Model.Entidade.Interface.VagaInterface
 
-    String nome, empresa, descricao, pais
+class Vaga implements VagaInterface {
+
+    String nome
+    String empresa
+    String descricao
+    String pais
     int id
-    List competencias
+    List<Competencia> competencias
 
     @Override
     String toString() {
@@ -13,6 +18,6 @@ class Vaga {
                 "Empresa: " + empresa + " - " +
                 "Descrição: " + descricao + " - " +
                 "País: " + pais + " - " +
-                "Competências: " + competencias
+                "Competências: " + competencias.toString().replaceAll(/[\[\]{}]/, '')
     }
 }

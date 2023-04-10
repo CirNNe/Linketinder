@@ -1,11 +1,18 @@
 package Backend.Model.Entidade
 
-class Candidato {
-    String nome, email, descricaoPessoal, senha, dataNascimento, pais
-    long cpf
-    int id, cep
-    List competencias
+import Backend.Model.Entidade.Interface.CandidatoInterface
 
+class Candidato implements CandidatoInterface {
+    String nome
+    String email
+    String dataNascimento
+    String descricaoPessoal
+    String senha
+    String pais
+    long cpf
+    int id
+    int cep
+    List<Competencia> competencias
 
     @Override
     String toString() {

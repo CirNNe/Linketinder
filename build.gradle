@@ -24,7 +24,7 @@ test {
 }
 
 application {
-    mainClass = 'Backend.App'
+    mainClass = 'Backend.Viewer.App'
 }
 
 run {

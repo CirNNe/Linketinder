@@ -1,67 +1,96 @@
 package Backend.Service
 
-import Backend.Model.DAO.EmpresaDAO
-import Backend.Model.Entidade.Empresa
+import Backend.Model.DAO.Interface.EmpresaDAOInterface
+import Backend.Model.Entidade.Interface.EmpresaInterface
+import Backend.Model.Entidade.Interface.MatchInterface
+import Backend.Service.Interface.EmpresaServiceInterface
+import Backend.Service.Interface.ValidatorServiceInterface
 
-class EmpresaService {
+class EmpresaService implements EmpresaServiceInterface {
 
-    EmpresaDAO empresaDAO
+    private EmpresaDAOInterface empresaDAO
+    private ValidatorServiceInterface validatorService
 
-    EmpresaService(EmpresaDAO empresaDAO) {
+    EmpresaService(EmpresaDAOInterface empresaDAO, ValidatorServiceInterface validatorService) {
         this.empresaDAO = empresaDAO
+        this.validatorService = validatorService
     }
 
-    boolean validaDadosCadastroEmpresa(Empresa empresa) {
+    boolean salvaDadosNovaEmpresa(EmpresaInterface empresa) {
+        try {
+            if(validatorService.validaDadosNovaEmpresa(empresa)) {
+                empresaDAO.insereDadosEmpresas(empresa)
+                return true
+            }
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar salvar dados da nova empresa: " + e)
+        }
+    }
 
-        if(!empresa.nome.isEmpty() &&
-            empresa.emailCorporativo.matches(/\S+@\w+\.\w{2,6}(\.\w{2})?/) &&
-            empresa.cnpj.toString().replaceAll(/[^\d]/, '').matches(/^\d{14}$/) &&
-            empresa.cep.toString().replaceAll("[^0-9]", "").matches(/[0-9]{8}/) &&
-            empresa.pais.matches(/^[a-zA-Z]+$/) &&
-            !empresa.descricao.isEmpty() &&
-            empresa.senha.matches(/(?=.*[A-Z])(?=.*[!@#$%^&*\-\\+])(?=.*[0-9]).{8,}/)) {
+    EmpresaInterface recebeDadosEmpresas(long cnpj) {
+        try {
+            if(validatorService.validaCnpj(cnpj)) {
+                EmpresaInterface empresa = empresaDAO.buscaPerfilUnicoEmpresa(cnpj)
+                return empresa
+            }
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar receber os dados da empresa: " + e)
+        }
+    }
 
-            this.empresaDAO.inserirDadosNaTabelaEmpresas(empresa)
+    boolean exibeEmpresa(long cnpj) {
+        try {
+            EmpresaInterface empresa = recebeDadosEmpresas(cnpj)
+            println(empresa)
             return true
-        } else {
-            println("Informações inválidas, por favor, revise os dados e tente novamente.")
-            return false
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar exibir os dados da empresa: " + e)
         }
     }
 
-    void validaEFormataLeituraEmpresa(long cnpj) {
-
-        if(cnpj.toString().replaceAll(/[^\d]/, '').matches(/^\d{14}$/)) {
-
-            Empresa empresa = this.empresaDAO.lePerfilUnicoEmpresa(cnpj)
-
-            println("ID: " + empresa.id + "\n" + "Nome: " + empresa.nome + "\n" +
-                    "E-mail: " + empresa.emailCorporativo + "\n" +
-                    "CNPJ: " + empresa.cnpj + "\n" + "CEP: " + empresa.cep + "\n" +
-                    "País: " + empresa.pais + "\n" + "Descrição: " + empresa.descricao)
-
-        } else {
-            println("O dado informado está inválido, por favor, revise e tente novamente.")
+    boolean salvaCurtidaEmpresa(long cnpj, int idCandidato) {
+        try{
+            if(validatorService.validaCnpj(cnpj)) {
+                empresaDAO.insereCurtidaACandidato(cnpj, idCandidato)
+            }
+            println("Curtida realizada com sucesso!")
+            return true
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar salvar curtida ao candidato: " + e)
         }
     }
 
-    void validaCurtidaEmpresa(long cnpj, int idCandidato) {
-
-        if(cnpj.toString().replaceAll(/[^\d]/, '').matches(/^\d{14}$/) &&
-            idCandidato > 0) {
-
-            this.empresaDAO.inserirCurtidaCandidato(cnpj, idCandidato)
-
-        } else {
-            println("Os dados informados estão inválidos, por favor, revise e tente novamente.")
+    List<MatchInterface> recebeListaMatchsEmpresa(long cnpj) {
+        try {
+            List<MatchInterface> lista = empresaDAO.buscaMatchsEmpresa(cnpj)
+            return lista
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar receber a lista de matchs da empresa: " + e)
         }
     }
 
-    void formataLeituraMatchEmpresa(long cnpj) {
+    List formataListaMatchsEmpresa(long cnpj) {
+        try {
+            List<MatchInterface> lista = recebeListaMatchsEmpresa(cnpj)
+            List listaFinal = new ArrayList()
+            for(int posicao = 0; posicao < lista.size(); posicao++) {
+                listaFinal.add("Candidato: " + lista[posicao]['nomeCandidato'])
+            }
+            return listaFinal
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar formatar a lista de matchs da empresa: " + e)
+        }
+    }
 
-        List listaDeMatchs = this.empresaDAO.listarMatchsEmpresa(cnpj)
-        for(int posicao = 0; posicao < listaDeMatchs.size(); posicao++) {
-            println("Candidato: " + listaDeMatchs[posicao]['nomeCandidato'] + "\n")
+    boolean exibeListaMatchsEmpresa(long cnpj) {
+        try {
+            List lista = formataListaMatchsEmpresa(cnpj)
+            for(int posicao = 0; posicao < lista.size(); posicao++) {
+                println(lista[posicao])
+            }
+            return true
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar exibir a lista de matchs da empresa: " + e)
         }
     }
 }
