@@ -7,7 +7,7 @@
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
-![Version](https://img.shields.io/badge/version-v1.3.0-blue) 
+![Version](https://img.shields.io/badge/version-v3.1.0-blue) 
 
 
 Indice
@@ -28,6 +28,10 @@ pode curtir o perfil de um candidato e, também, o candidato pode curtir uma vag
 ---
 
 ## 🔖&nbsp; Versão
+
+![Version](https://img.shields.io/badge/version-v3.1.0-blue)
+
+- Código refatorado com Clean Code
 
 ![Version](https://img.shields.io/badge/version-v3.0.0-blue)
 
