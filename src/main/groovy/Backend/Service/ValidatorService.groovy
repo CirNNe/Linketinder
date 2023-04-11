@@ -2,6 +2,7 @@ package Backend.Service
 
 import Backend.Model.DAO.Interface.CandidatoDAOInterface
 import Backend.Model.DAO.Interface.EmpresaDAOInterface
+import Backend.Model.DAO.Interface.PaisDAOInterface
 import Backend.Model.DAO.Interface.VagaDAOInterface
 import Backend.Model.Entidade.Interface.CandidatoInterface
 import Backend.Model.Entidade.Interface.CompetenciaInterface
@@ -21,14 +22,17 @@ class ValidatorService implements ValidatorServiceInterface {
     private VagaDAOInterface vagaDAO
     private CandidatoDAOInterface candidatoDAO
     private EmpresaDAOInterface empresaDAO
+    private PaisDAOInterface paisDAO
+
 
     ValidatorService(RegexValidaDadosNovoUsuario regex, RegexValidaDadosNovaVaga regexVaga, VagaDAOInterface vagaDAO,
-                        CandidatoDAOInterface candidatoDAO, EmpresaDAOInterface empresaDAO) {
+                        CandidatoDAOInterface candidatoDAO, EmpresaDAOInterface empresaDAO, PaisDAOInterface paisDAO) {
         this.regexUsuario = regex
         this.regexVaga = regexVaga
         this.vagaDAO = vagaDAO
         this.candidatoDAO = candidatoDAO
         this.empresaDAO = empresaDAO
+        this.paisDAO = paisDAO
     }
 
     boolean validaDadosNovoCandidato(CandidatoInterface candidato) {
@@ -43,11 +47,11 @@ class ValidatorService implements ValidatorServiceInterface {
                     candidato.senha.matches(regexUsuario.getSenha())) {
                     return true
             } else {
-                println("Dados do candidato inválidos, por favor, tente novamente!")
+                println("Dados do candidato inv?lidos, por favor, tente novamente!")
                 return false
             }
         } catch (Exception e) {
-            throw new Exception("Erro ao tentar validar os dados do candidato: " + e)
+            throw new Exception("Erro ao tentar validar os dados do novo candidato: " + e)
         }
     }
 
@@ -62,7 +66,7 @@ class ValidatorService implements ValidatorServiceInterface {
                     empresa.senha.matches(regexUsuario.getSenha())) {
                     return true
             } else {
-                println("Dados da empresa inválidos, por favor, tente novamente!")
+                println("Dados da empresa inv?lidos, por favor, tente novamente!")
                 return false
             }
         } catch (Exception e) {
@@ -81,11 +85,11 @@ class ValidatorService implements ValidatorServiceInterface {
             if(listaCompetenciasValidadas.size() == listaCompetencias.size()) {
                 return true
             } else {
-                println("Competência(s) inválida(s), tente novamente!")
+                println("Compet?ncia(s) inv?lida(s), tente novamente!")
                 return false
             }
         } catch (Exception e) {
-            throw new Exception("Erro ao tentar validar os dados da competência: " + e)
+            throw new Exception("Erro ao tentar validar os dados da compet?ncia: " + e)
         }
     }
 
@@ -97,7 +101,7 @@ class ValidatorService implements ValidatorServiceInterface {
                 vaga.pais.matches(regexUsuario.getPais())) {
                 return true
             } else {
-                println("Dados da vaga inválidos, por favor, tente novamente!")
+                println("Dados da vaga inv�lidos, por favor, tente novamente!")
                 return false
             }
         } catch (Exception e) {
@@ -105,15 +109,31 @@ class ValidatorService implements ValidatorServiceInterface {
         }
     }
 
-    int validaTipoUsuario(long identificacao) {
+    boolean validaEscolhaPais(String pais) {
+        try {
+            List paises = paisDAO.buscaListaPaises()
+            for(int posicao = 0; posicao < paises.size(); posicao++) {
+                if(paises.contains(pais)) {
+                    return true
+                } else {
+                    println("Pa�s inv�lido, tente novamente!")
+                    return false
+                }
+            }
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar validar o pa�s inserido: " + e)
+        }
+    }
+
+    Integer validaTipoUsuario(long identificacao) {
        try {
            if(identificacao.toString().length() == 11) {
                return CANDIDATO
-           } else if(identificacao.toString() == 14) {
+           } else if(identificacao.toString().length() == 14) {
                return EMPRESA
            }
        } catch (Exception e) {
-           throw new Exception("Erro ao tentar validar o tipo do usuário: " + e)
+           throw new Exception("Erro ao tentar validar o tipo do usu�rio: " + e)
        }
     }
 
@@ -121,7 +141,7 @@ class ValidatorService implements ValidatorServiceInterface {
         if(cpf.toString().replaceAll("[^0-9]", "").matches(/[0-9]{11}/)) {
             return true
         } else {
-            println("O cpf informado está inválido, por favor, revise e tente novamente.")
+            println("O cpf informado est? inv?lido, por favor, revise e tente novamente.")
             return false
         }
     }
@@ -130,18 +150,17 @@ class ValidatorService implements ValidatorServiceInterface {
         if(cnpj.toString().replaceAll("[^0-9]", "").matches(/[0-9]{14}/)) {
             return true
         } else {
-            println("O cnpj informado está inválido, por favor, revise e tente novamente.")
+            println("O cnpj informado est? inv?lido, por favor, revise e tente novamente.")
             return false
         }
     }
 
-    boolean validaIdVaga(int id) {
-        if(vagaDAO.buscaIdEmpresaResponsavelVaga(id) != null) {
+    boolean validaIdVaga(int idVaga) {
+        if(vagaDAO.buscaIdEmpresaResponsavelVaga(idVaga) != null) {
             return true
         } else {
-            println("Não foi encontrado o id da vaga, por favor, revise o id e tente novamente!")
+            println("N?o foi encontrado o id da vaga, por favor, revise o id e tente novamente!")
             return false
         }
-
     }
 }

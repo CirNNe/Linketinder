@@ -27,13 +27,13 @@ class VagaDAO implements VagaDAOInterface {
         this.conexaoBancoDados = conexaoBancoDados
     }
 
-    boolean insereDadosVagas(long cnpj, VagaInterface vaga) {
+    boolean insereDadosVagas(VagaInterface vaga) {
         String sql = "INSERT INTO vagas(nome, descricao_vaga, id_empresa, id_pais) " +
                 "VALUES(?, ?, ?, ?)"
         try(Connection conexao = conexaoBancoDados.conectar()
             PreparedStatement inserirVaga = conexao.prepareStatement(sql)) {
 
-            Integer idEmpresa = empresaDAO.buscaIdEmpresa(cnpj)
+            Integer idEmpresa = empresaDAO.buscaIdEmpresa(vaga.cnpj)
             Integer idPais = paisDAO.buscaIdPais(vaga.pais)
 
             inserirVaga.setString(1, vaga.nome)
@@ -77,7 +77,7 @@ class VagaDAO implements VagaDAOInterface {
             }
             return listaDeVagas
         } catch (Exception e) {
-            throw new SQLException("Erro ao tentar ler as vagas da empresa: " + e)
+            throw new SQLException("Erro ao tentar buscar as vagas da empresa: " + e)
         }
     }
 
@@ -106,7 +106,7 @@ class VagaDAO implements VagaDAOInterface {
             }
             return listaDeVagas
         } catch (Exception e) {
-            throw new SQLException("Erro ao tentar ler as vagas gerais: " + e)
+            throw new SQLException("Erro ao tentar buscar as vagas gerais: " + e)
         }
     }
 

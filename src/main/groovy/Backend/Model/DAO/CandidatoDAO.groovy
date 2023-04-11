@@ -34,7 +34,7 @@ class CandidatoDAO implements CandidatoDAOInterface {
     Integer buscaIdCandidato(long cpf) {
         try {
             String sql = "SELECT id FROM candidatos WHERE cpf = ?"
-            return genericDAO.buscaIdUsuarioGeneric(sql, cpf)
+            return genericDAO.buscaIdUsuario(sql, cpf)
         } catch (Exception e) {
             throw new Exception("Erro ao tentar encontrar o id do Candidato." + e)
         }

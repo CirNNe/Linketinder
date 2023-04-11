@@ -6,7 +6,9 @@ import Backend.Controller.EmpresaController
 import Backend.Controller.Inteface.CandidatoControllerInterface
 import Backend.Controller.Inteface.CompetenciaControllerInterface
 import Backend.Controller.Inteface.EmpresaControllerInterface
+import Backend.Controller.Inteface.PaisControllerInterface
 import Backend.Controller.Inteface.VagaControllerInterface
+import Backend.Controller.PaisController
 import Backend.Controller.VagaController
 import Backend.Model.DAO.CandidatoDAO
 import Backend.Model.DAO.CompetenciaDAO
@@ -34,8 +36,10 @@ import Backend.Service.EmpresaService
 import Backend.Service.Interface.CandidatoServiceInterface
 import Backend.Service.Interface.CompetenciaServiceInterface
 import Backend.Service.Interface.EmpresaServiceInterface
+import Backend.Service.Interface.PaisServiceInterface
 import Backend.Service.Interface.VagaServiceInterface
 import Backend.Service.Interface.ValidatorServiceInterface
+import Backend.Service.PaisService
 import Backend.Service.VagaService
 import Backend.Service.ValidatorService
 import Backend.Util.Regex.RegexValidaDadosNovaVaga
@@ -55,7 +59,8 @@ class EmpresaViewer {
     VagaDAOInterface vagaDAO = new VagaDAO(genericDAO, empresaDAO, paisDAO, conexaoBancoDados)
     VagaServiceInterface vagaService = new VagaService(vagaDAO, validatorService)
 
-    ValidatorServiceInterface validatorService = new ValidatorService(regexUsuario, regexVaga, vagaDAO, candidatoDAO, empresaDAO)
+    ValidatorServiceInterface validatorService = new ValidatorService(regexUsuario, regexVaga, vagaDAO, candidatoDAO,
+                                                                        empresaDAO, paisDAO)
 
     CandidatoDAOInterface candidatoDAO = new CandidatoDAO(conexaoBancoDados, genericDAO, vagaDAO, paisDAO)
     CandidatoServiceInterface candidatoService = new CandidatoService(candidatoDAO, validatorService)
@@ -63,12 +68,15 @@ class EmpresaViewer {
     CompetenciaDAOInterface competenciaDAO = new CompetenciaDAO(conexaoBancoDados, candidatoDAO, genericDAO, validatorService)
     CompetenciaServiceInterface competenciaService = new CompetenciaService(competenciaDAO, validatorService)
 
+    PaisServiceInterface paisService = new PaisService(validatorService, paisDAO)
+
     CandidatoControllerInterface candidatoController = new CandidatoController(candidatoService)
     VagaControllerInterface vagaController = new VagaController(vagaService)
 
     EmpresaServiceInterface empresaService = new EmpresaService(empresaDAO, validatorService)
     EmpresaControllerInterface empresaController = new EmpresaController(empresaService)
     CompetenciaControllerInterface competenciaController = new CompetenciaController(competenciaService)
+    PaisControllerInterface paisController = new PaisController(paisService)
 
     EmpresaInterface empresa = new Empresa()
     VagaInterface vaga = new Vaga()
@@ -126,8 +134,14 @@ class EmpresaViewer {
         println("DIGITE O CEP DA EMPRESA")
         int cep = Integer.parseInt(inputEmpresa.nextLine())
 
+        println('-' * 20)
+        paisController.listaPaises()
+        println('-' * 20)
         println("DIGITE O PAÍS DA EMPRESA")
         String pais = inputEmpresa.nextLine()
+        while (!validatorService.validaEscolhaPais(pais)) {
+            pais = inputEmpresa.nextLine()
+        }
 
         println("DIGITE A DISCRIÇÃO DA EMPRESA")
         String descricao = inputEmpresa.nextLine()
@@ -143,7 +157,11 @@ class EmpresaViewer {
         empresa.descricao = descricao
         empresa.senha = senha
 
-        empresaController.recebeDadosNovaEmpresa(empresa)
+        if(empresaDAO.buscaIdEmpresa(cnpj) == null) {
+            empresaController.recebeDadosNovaEmpresa(empresa)
+        } else {
+            println("Já existe uma empresa cadastrada com esse cnpj: " + cnpj)
+        }
     }
 
     void perfilDaEmpresa() {
@@ -161,8 +179,8 @@ class EmpresaViewer {
         println("DIGITE O NOME DA VAGA")
         String nome = inputVaga.nextLine()
 
-        println("DIGITE O NOME DA EMPRESA")
-        String empresa = inputVaga.nextLine()
+//        println("DIGITE O NOME DA EMPRESA")
+//        String empresa = inputVaga.nextLine()
 
         println("DIGITE O CNPJ DA EMPRESA")
         long cnpj = Long.parseLong(inputVaga.nextLine())
@@ -170,8 +188,14 @@ class EmpresaViewer {
         println("DIGITE A DESCRIÇÃO DA VAGA")
         String descricao = inputVaga.nextLine()
 
+        println('-' * 20)
+        paisController.listaPaises()
+        println('-' * 20)
         println("DIGITE O PAÍS DE ATUAÇÃO")
         String pais = inputVaga.nextLine()
+        while (!validatorService.validaEscolhaPais(pais)) {
+            pais = inputVaga.nextLine()
+        }
 
         List<CompetenciaInterface> listaDeCompetencias = new ArrayList()
         println("DIGITE AS COMPETÊNCIAS PARA VAGA")
@@ -196,16 +220,16 @@ class EmpresaViewer {
         }
 
         vaga.nome = nome
-        vaga.empresa = empresa
+        vaga.cnpj = cnpj
         vaga.descricao = descricao
         vaga.pais = pais
 
         if(empresaDAO.buscaIdEmpresa(cnpj) != null) {
-            vagaController.recebeDadosVaga(cnpj, vaga)
+            vagaController.recebeDadosVaga(vaga)
             Integer id = vagaDAO.buscaIdVaga(nome)
             competenciaController.recebeDadosNovaCompetencia(id, cnpj, listaDeCompetencias)
         } else {
-            println("Não existe empresa cadastrada com esse cnpj!")
+            println("Não existe empresa cadastrada com esse cnpj: " + cnpj)
         }
     }
 

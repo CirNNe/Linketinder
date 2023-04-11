@@ -10,6 +10,9 @@ interface VagaInterface {
     String getEmpresa()
     void setEmpresa(String Empresa)
 
+    long getCnpj()
+    void setCnpj(long cnpj)
+
     String getDescricao()
     void setDescricao(String descricao)
 

@@ -6,13 +6,13 @@ import Backend.Service.Interface.CompetenciaServiceInterface
 
 class CompetenciaController implements CompetenciaControllerInterface {
 
-    CompetenciaServiceInterface competenciaService
+    private CompetenciaServiceInterface competenciaService
 
     CompetenciaController(CompetenciaServiceInterface competenciaService) {
         this.competenciaService = competenciaService
     }
 
     boolean recebeDadosNovaCompetencia(Integer id, long identificacao, List<CompetenciaInterface> listaCompetencias) {
-        competenciaService.salvaNovaCompetencia(id, identificacao, listaCompetencias)
+        competenciaService.recebeNovaCompetencia(id, identificacao, listaCompetencias)
     }
 }

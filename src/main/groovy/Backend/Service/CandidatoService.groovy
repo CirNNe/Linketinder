@@ -46,8 +46,9 @@ class CandidatoService implements CandidatoServiceInterface {
             String pais = lista[posicao]['pais']
             String descricao = lista[posicao]['descricaoPessoal']
             List competencias = lista[posicao]['competencias'] as List
-            listaFormatada.addAll([["ID: " + id, "Nome: " + nome, "País: " + pais, "Descrição: " + descricao,
-                                    "Competências: " + competencias.toString().replaceAll(/[\[\]{}]/, '')]])
+            listaFormatada.addAll(["ID: " + id + ' - ' + "Nome: " + nome + ' - ' + "País: " + pais + ' - ' +
+                                    "Descrição: " + descricao + ' - ' +
+                                    "Competências: " + competencias.toString().replaceAll(/[\[\]{}]/, '')])
         }
         return listaFormatada
     }

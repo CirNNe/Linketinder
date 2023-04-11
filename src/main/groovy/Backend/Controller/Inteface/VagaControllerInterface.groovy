@@ -4,9 +4,7 @@ import Backend.Model.Entidade.Interface.VagaInterface
 
 interface VagaControllerInterface {
 
-    void recebeDadosVaga(long cnpj, VagaInterface vaga)
-
-//    void recebeDadosCompetenciasVaga(long cnpj, List listaDeCompetencias)
+    void recebeDadosVaga(VagaInterface vaga)
 
     void listaVagasEmpresa(long cnpj)
 

@@ -28,9 +28,8 @@ class CompetenciaServiceTest {
         long identificacao = 70247122440
 
         when(validatorService.validaDadosNovaCompetencia(lista)).thenReturn(true)
-        when(competenciaDAO.insereCompetencia(idVaga, identificacao, competencia.nome as CompetenciaInterface)).thenReturn(true)
 
-        boolean resultado = competenciaService.salvaNovaCompetencia(idVaga, identificacao, lista)
+        boolean resultado = competenciaService.recebeNovaCompetencia(idVaga, identificacao, lista)
 
         Assertions.assertTrue(resultado)
     }

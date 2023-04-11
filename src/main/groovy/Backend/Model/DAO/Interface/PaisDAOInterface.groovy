@@ -4,4 +4,5 @@ interface PaisDAOInterface {
 
     Integer buscaIdPais(String pais)
 
+    List buscaListaPaises()
 }

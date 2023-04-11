@@ -1,7 +1,6 @@
 package Backend.Model.DAO
 
 import Backend.Model.DAO.Interface.ConexaoBancoDadosInterface
-
 import java.sql.Connection
 import java.sql.DriverManager
 

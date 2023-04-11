@@ -91,9 +91,9 @@ class CandidatoServiceTest {
         candidato2.dataNascimento = "07-11-1997"
         candidato2.cpf = 70247122440
         candidato2.cep = 54460465
-        candidato2.pais = "Brasil"
+        candidato2.pais = "Argentina"
         candidato2.descricaoPessoal = "Descricao"
-        candidato2.competencias = ['TypeScript', 'Gradle'] as List<Competencia>
+        candidato2.competencias = ['TypeScript', 'JavaScript'] as List<Competencia>
 
         lista.add(candidato1)
         lista.add(candidato2)
@@ -101,10 +101,13 @@ class CandidatoServiceTest {
         when(candidatoService.recebeListaCandidatos()).thenReturn(lista)
 
         List<CandidatoInterface> resultado = candidatoService.formataLeituraListaCandidatos()
-        List listaExemplo = [["ID: " + 0, "Nome: " + 'Anônimo', "País: " + 'Brasil', "Descrição: " + 'Descricao',
-                              "Competências: " + ['Java', 'Groovy'].toString().replaceAll(/[\[\]{}]/, '')],
-                             ["ID: " + 0, "Nome: " + 'Anônimo', "País: " + 'Brasil', "Descrição: " + 'Descricao',
-                              "Competências: " + ['TypeScript', 'Gradle'].toString().replaceAll(/[\[\]{}]/, '')]]
+        List listaExemplo = ["ID: " + 0 + ' - ' + "Nome: " + 'Anônimo' + ' - ' + "País: " + 'Brasil' + ' - ' +
+                                     "Descrição: " + 'Descricao' + ' - ' +
+                                     "Competências: " + ['Java', 'Groovy'].toString().replaceAll(/[\[\]{}]/, ''),
+
+                            "ID: " + 0 + ' - ' + "Nome: " + 'Anônimo' + ' - ' + "País: " + 'Argentina' + ' - ' +
+                                      "Descrição: " + 'Descricao' + ' - ' +
+                                       "Competências: " + ['TypeScript', 'JavaScript'].toString().replaceAll(/[\[\]{}]/, '')]
 
         Assertions.assertEquals(resultado, listaExemplo)
     }

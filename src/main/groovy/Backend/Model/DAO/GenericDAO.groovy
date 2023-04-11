@@ -2,7 +2,6 @@ package Backend.Model.DAO
 
 import Backend.Model.DAO.Interface.ConexaoBancoDadosInterface
 import Backend.Model.DAO.Interface.GenericDAOInterface
-import Backend.Model.Entidade.Interface.CompetenciaInterface
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
@@ -16,20 +15,7 @@ class GenericDAO implements GenericDAOInterface{
         this.conexaoBancoDados = conexaoBancoDados
     }
 
-    boolean insereCompetenciasGeneric(String sql, int id, CompetenciaInterface competencia) {
-        try(Connection conexao = conexaoBancoDados.conectar()
-            PreparedStatement inserirDado = conexao.prepareStatement(sql)) {
-
-            inserirDado.setString(1, competencia.nome)
-            inserirDado.setInt(2, id)
-            inserirDado.executeUpdate()
-            return true
-        } catch (Exception e) {
-            throw new SQLException("Erro ao tentar inserir dados na tabela competências: " + e)
-        }
-    }
-
-    Integer buscaIdUsuarioGeneric(String sql, long identificacao) {
+    Integer buscaIdUsuario(String sql, long identificacao) {
         try(Connection conexao = conexaoBancoDados.conectar()
             PreparedStatement buscarId = conexao.prepareStatement(sql)) {
 

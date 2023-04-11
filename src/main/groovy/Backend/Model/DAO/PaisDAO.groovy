@@ -34,4 +34,20 @@ class PaisDAO implements PaisDAOInterface{
             throw new SQLException("Erro ao tentar buscar o id do país: " + e)
         }
     }
+
+    List buscaListaPaises() {
+        String sql = "SELECT * FROM pais"
+        try(Connection conexao = conexaoBancoDados.conectar()
+            PreparedStatement buscarPaises = conexao.prepareStatement(sql)
+            ResultSet resultSet = buscarPaises.executeQuery()) {
+            List paises = new ArrayList()
+            while(resultSet.next()) {
+                String pais = resultSet.getString("nome")
+                paises.add(pais)
+            }
+            return paises
+        } catch (Exception e) {
+            throw new SQLException("Erro ao tentar buscar a lista de países no banco de dados: " + e)
+        }
+    }
 }

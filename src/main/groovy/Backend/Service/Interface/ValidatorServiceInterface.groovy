@@ -15,7 +15,7 @@ interface ValidatorServiceInterface {
 
     boolean validaDadosNovaVaga(VagaInterface vaga)
 
-    int validaTipoUsuario(long identificacao)
+    Integer validaTipoUsuario(long identificacao)
 
     boolean validaCpf(long cpf)
 

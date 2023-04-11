@@ -12,8 +12,8 @@ class VagaController implements VagaControllerInterface {
         this.vagaService = vagaService
     }
 
-    void recebeDadosVaga(long cnpj, VagaInterface vaga) {
-        vagaService.salvaDadosNovaVaga(cnpj, vaga)
+    void recebeDadosVaga(VagaInterface vaga) {
+        vagaService.salvaDadosNovaVaga(vaga)
     }
 
     void listaVagasEmpresa(long cnpj) {

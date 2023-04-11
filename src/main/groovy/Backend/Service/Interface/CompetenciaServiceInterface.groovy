@@ -4,6 +4,6 @@ import Backend.Model.Entidade.Interface.CompetenciaInterface
 
 interface CompetenciaServiceInterface {
 
-    boolean salvaNovaCompetencia(Integer id, long identificacao, List<CompetenciaInterface> listaCompetencias)
+    boolean recebeNovaCompetencia(Integer id, long identificacao, List<CompetenciaInterface> listaCompetencias)
 
 }

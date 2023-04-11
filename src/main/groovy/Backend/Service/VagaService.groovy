@@ -15,11 +15,11 @@ class VagaService implements VagaServiceInterface {
         this.validatorService = validatorService
     }
 
-    boolean salvaDadosNovaVaga(long cnpj, VagaInterface vaga) {
+    boolean salvaDadosNovaVaga(VagaInterface vaga) {
         try {
             if(validatorService.validaDadosNovaVaga(vaga)) {
-                vagaDAO.insereDadosVagas(cnpj, vaga)
-                return true
+            vagaDAO.insereDadosVagas(vaga)
+            return true
             }
         } catch (Exception e) {
             throw new Exception("Erro ao tentar salvar os dados da nova vaga: " + e)

@@ -23,16 +23,15 @@ class VagaServiceTest {
 
         VagaInterface vaga = new Vaga()
         vaga.nome = "Tester Jr"
-        vaga.empresa = "ZG ZG"
+        vaga.cnpj = 12345678912345
         vaga.pais = "Brasil"
         vaga.descricao = "Descricao"
         vaga.competencias = ["Java", "Groovy"] as List<Competencia>
-        long cnpj = 12345678912345
 
         when(validatorService.validaDadosNovaVaga(vaga)).thenReturn(true)
-        when(vagaDAO.insereDadosVagas(cnpj, vaga)).thenReturn(true)
+        when(vagaDAO.insereDadosVagas(vaga)).thenReturn(true)
 
-        boolean resultado = vagaService.salvaDadosNovaVaga(cnpj, vaga)
+        boolean resultado = vagaService.salvaDadosNovaVaga(vaga)
 
         assertTrue(resultado)
     }

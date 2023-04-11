@@ -6,6 +6,7 @@ class Vaga implements VagaInterface {
 
     String nome
     String empresa
+    long cnpj
     String descricao
     String pais
     int id

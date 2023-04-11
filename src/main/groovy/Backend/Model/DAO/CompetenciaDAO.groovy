@@ -7,14 +7,16 @@ import Backend.Model.DAO.Interface.GenericDAOInterface
 import Backend.Model.Entidade.Interface.CompetenciaInterface
 import Backend.Service.Interface.ValidatorServiceInterface
 
+import java.sql.Connection
+import java.sql.PreparedStatement
 import java.sql.SQLException
 
 class CompetenciaDAO implements CompetenciaDAOInterface {
 
-    ConexaoBancoDadosInterface conexaoBancoDados
-    CandidatoDAOInterface candidatoDAO
-    GenericDAOInterface genericDAO
-    ValidatorServiceInterface validatorService
+    private ConexaoBancoDadosInterface conexaoBancoDados
+    private CandidatoDAOInterface candidatoDAO
+    private GenericDAOInterface genericDAO
+    private ValidatorServiceInterface validatorService
 
     CompetenciaDAO(ConexaoBancoDadosInterface conexaoBancoDados, CandidatoDAOInterface candidatoDAO,
                    GenericDAOInterface genericDAO, ValidatorServiceInterface validatorService) {
@@ -24,19 +26,17 @@ class CompetenciaDAO implements CompetenciaDAOInterface {
         this.validatorService = validatorService
     }
 
-    boolean insereCompetencia(Integer id, long identificacao, CompetenciaInterface competencia) {
-        try {
-            if(validatorService.validaTipoUsuario(identificacao) == 1) {
-                String sql = "INSERT INTO competencias(nome, id_candidato) VALUES(?, ?)"
-                genericDAO.insereCompetenciasGeneric(sql, id, competencia)
-                return true
-            } else if(validatorService.validaTipoUsuario(identificacao) == 2) {
-                String sql = "INSERT INTO competencias(nome, id_vagas) VALUES(?, ?)"
-                genericDAO.insereCompetenciasGeneric(sql, id, competencia)
-                return true
-            }
+    boolean insereCompetencia(String sql, int id, CompetenciaInterface competencia) {
+        try(Connection conexao = conexaoBancoDados.conectar()
+            PreparedStatement inserirDado = conexao.prepareStatement(sql)) {
+
+            inserirDado.setString(1, competencia.nome)
+            inserirDado.setInt(2, id)
+            inserirDado.executeUpdate()
+            inserirDado.close()
+            return true
         } catch (Exception e) {
-            throw new SQLException("Erro ao tentar inserir competencia no banco de dados " + e)
+            throw new SQLException("Erro ao tentar inserir dados na tabela competências: " + e)
         }
     }
 }

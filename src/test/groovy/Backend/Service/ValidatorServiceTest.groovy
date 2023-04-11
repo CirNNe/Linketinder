@@ -4,14 +4,16 @@ import Backend.Model.DAO.CandidatoDAO
 import Backend.Model.DAO.EmpresaDAO
 import Backend.Model.DAO.Interface.CandidatoDAOInterface
 import Backend.Model.DAO.Interface.EmpresaDAOInterface
+import Backend.Model.DAO.Interface.PaisDAOInterface
 import Backend.Model.DAO.Interface.VagaDAOInterface
+import Backend.Model.DAO.PaisDAO
 import Backend.Model.DAO.VagaDAO
 import Backend.Service.Interface.ValidatorServiceInterface
 import Backend.Util.Regex.RegexValidaDadosNovaVaga
 import Backend.Util.Regex.RegexValidaDadosNovoUsuario
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import static org.mockito.Mockito.mock
-import static org.mockito.Mockito.when
 
 class ValidatorServiceTest {
 
@@ -20,11 +22,36 @@ class ValidatorServiceTest {
     VagaDAOInterface vagaDAO = mock(VagaDAO.class)
     CandidatoDAOInterface candidatoDAO = mock(CandidatoDAO.class)
     EmpresaDAOInterface empresaDAO = mock(EmpresaDAO.class)
-    ValidatorServiceInterface validatorService = new ValidatorService(regexUsuario, regexVaga, vagaDAO, candidatoDAO, empresaDAO)
+    PaisDAOInterface paisDAO = mock(PaisDAO.class)
+    ValidatorServiceInterface validatorService = new ValidatorService(regexUsuario, regexVaga, vagaDAO, candidatoDAO,
+                                                                        empresaDAO, paisDAO)
 
     @Test
-    void validaDadosNovoCandidatoTest() {
+    void validaTipoUsuarioTest() {
+
+        long identificacao = 12345678912345
+
+        Integer tipoUsuario = validatorService.validaTipoUsuario(identificacao)
+
+        Assertions.assertEquals(2, tipoUsuario)
 
     }
 
+    @Test
+    void validaCpfTest() {
+        long cpf = 70247122440
+
+        boolean resultado = validatorService.validaCpf(cpf)
+
+        Assertions.assertTrue(resultado)
+    }
+
+    @Test
+    void validaCnpjTest() {
+        long cnpj = 12345678912345
+
+        boolean resultado = validatorService.validaCnpj(cnpj)
+
+        Assertions.assertTrue(resultado)
+    }
 }

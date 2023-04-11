@@ -15,7 +15,4 @@ interface EmpresaDAOInterface {
     boolean insereCurtidaACandidato(long cnpj, int idCandidato)
 
     List<Match> buscaMatchsEmpresa(long cnpj)
-
-
-
 }

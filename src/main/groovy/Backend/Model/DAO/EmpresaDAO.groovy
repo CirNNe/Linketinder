@@ -28,7 +28,7 @@ class EmpresaDAO implements EmpresaDAOInterface{
     Integer buscaIdEmpresa(long cnpj) {
         try {
             String sql = "SELECT id FROM empresas WHERE cnpj = ?"
-            return genericDAO.buscaIdUsuarioGeneric(sql, cnpj)
+            return genericDAO.buscaIdUsuario(sql, cnpj)
         } catch (Exception e) {
             throw new SQLException("Erro ao tentar encontrar id da empresa: " + e)
         }
@@ -91,12 +91,13 @@ class EmpresaDAO implements EmpresaDAOInterface{
         try(Connection conexao = conexaoBancoDados.conectar()
             PreparedStatement inserirCurtidaEmpresa = conexao.prepareStatement(sql)) {
 
-            int idEmpresa = buscaIdEmpresa(cnpj) as int
+            Integer idEmpresa = buscaIdEmpresa(cnpj)
 
             inserirCurtidaEmpresa.setInt(1, idEmpresa)
             inserirCurtidaEmpresa.setInt(2, idCandidato)
 
             inserirCurtidaEmpresa.execute()
+            inserirCurtidaEmpresa.close()
             return true
         } catch (Exception e) {
             throw new SQLException("Erro ao tentar inserir curtida da empresa no banco de dados: " + e)
@@ -113,7 +114,7 @@ class EmpresaDAO implements EmpresaDAOInterface{
         try(Connection conexao = conexaoBancoDados.conectar()
             PreparedStatement matchs = conexao.prepareStatement(sql)) {
 
-            int idEmpresa = buscaIdEmpresa(cnpj) as int
+            Integer idEmpresa = buscaIdEmpresa(cnpj)
             matchs.setInt(1, idEmpresa)
             ResultSet resultSet = matchs.executeQuery()
 

@@ -4,7 +4,9 @@ import Backend.Controller.CandidatoController
 import Backend.Controller.CompetenciaController
 import Backend.Controller.Inteface.CandidatoControllerInterface
 import Backend.Controller.Inteface.CompetenciaControllerInterface
+import Backend.Controller.Inteface.PaisControllerInterface
 import Backend.Controller.Inteface.VagaControllerInterface
+import Backend.Controller.PaisController
 import Backend.Controller.VagaController
 import Backend.Model.DAO.CandidatoDAO
 import Backend.Model.DAO.CompetenciaDAO
@@ -22,18 +24,16 @@ import Backend.Model.DAO.PaisDAO
 import Backend.Model.DAO.VagaDAO
 import Backend.Model.Entidade.Candidato
 import Backend.Model.Entidade.Competencia
-import Backend.Model.Entidade.Empresa
 import Backend.Model.Entidade.Interface.CandidatoInterface
 import Backend.Model.Entidade.Interface.CompetenciaInterface
-import Backend.Model.Entidade.Interface.EmpresaInterface
-import Backend.Model.Entidade.Interface.VagaInterface
-import Backend.Model.Entidade.Vaga
 import Backend.Service.CandidatoService
 import Backend.Service.CompetenciaService
 import Backend.Service.Interface.CandidatoServiceInterface
 import Backend.Service.Interface.CompetenciaServiceInterface
+import Backend.Service.Interface.PaisServiceInterface
 import Backend.Service.Interface.VagaServiceInterface
 import Backend.Service.Interface.ValidatorServiceInterface
+import Backend.Service.PaisService
 import Backend.Service.VagaService
 import Backend.Service.ValidatorService
 import Backend.Util.Regex.RegexValidaDadosNovaVaga
@@ -53,16 +53,19 @@ class CandidatoViewer {
     VagaDAOInterface vagaDAO = new VagaDAO(genericDAO, empresaDAO, paisDAO, conexaoBancoDados)
     VagaServiceInterface vagaService = new VagaService(vagaDAO, validatorService)
 
-    ValidatorServiceInterface validatorService = new ValidatorService(regexUsuario, regexVaga, vagaDAO, candidatoDAO, empresaDAO)
+    ValidatorServiceInterface validatorService = new ValidatorService(regexUsuario, regexVaga, vagaDAO, candidatoDAO,
+                                                                        empresaDAO, paisDAO)
     CompetenciaDAOInterface competenciaDAO = new CompetenciaDAO(conexaoBancoDados, candidatoDAO, genericDAO, validatorService)
     CompetenciaServiceInterface competenciaService = new CompetenciaService(competenciaDAO, validatorService)
 
     CandidatoDAOInterface candidatoDAO = new CandidatoDAO(conexaoBancoDados, genericDAO, vagaDAO, paisDAO)
     CandidatoServiceInterface candidatoService = new CandidatoService(candidatoDAO, validatorService)
+    PaisServiceInterface paisService = new PaisService(validatorService, paisDAO)
 
     CandidatoControllerInterface candidatoController = new CandidatoController(candidatoService)
     VagaControllerInterface vagaController = new VagaController(vagaService)
     CompetenciaControllerInterface competenciaController = new CompetenciaController(competenciaService)
+    PaisControllerInterface paisController = new PaisController(paisService)
 
     CandidatoInterface candidato = new Candidato()
     CompetenciaInterface competencia = new Competencia()
@@ -116,8 +119,14 @@ class CandidatoViewer {
         println("DIGITE O CEP DO CANDIDATO - SOMENTE NÚMEROS")
         int cep = Integer.parseInt(inputCandidato.nextLine())
 
+        println('-' * 20)
+        paisController.listaPaises()
+        println('-' * 20)
         println("DIGITE O PAÍS DO CANDIDATO")
         String pais = inputCandidato.nextLine()
+        while (!validatorService.validaEscolhaPais(pais)) {
+            pais = inputCandidato.nextLine()
+        }
 
         println("DIGITE A DISCRIÇÃO PESSOAL DO CANDIDATO")
         String descricaoPessoal = inputCandidato.nextLine()
