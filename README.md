@@ -32,6 +32,12 @@ pode curtir o perfil de um candidato e, também, o candidato pode curtir uma vag
 ![Version](https://img.shields.io/badge/version-v3.1.0-blue)
 
 - Código refatorado com Clean Code
+  - Pontos de melhorias notadas:
+    - Código mais legível
+    - Projeto mais estruturado
+    - Classes e métodos bem mais desacopladas por utilizar interfaces
+    - Menos repetição de código
+    - Segurança dos testes unitários e facilidade de fazê-los por usar abstrações
 
 ![Version](https://img.shields.io/badge/version-v3.0.0-blue)
 
