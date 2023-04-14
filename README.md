@@ -8,7 +8,7 @@
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
-![Version](https://img.shields.io/badge/version-v3.1.0-blue) 
+![Version](https://img.shields.io/badge/version-v3.2.0-blue) 
 
 
 Indice
@@ -29,6 +29,14 @@ pode curtir o perfil de um candidato e, também, o candidato pode curtir uma vag
 ---
 
 ## 🔖&nbsp; Versão
+
+![Version](https://img.shields.io/badge/version-v3.2.0-blue)
+
+- Design Patterns
+  - Singleton:
+    - Foi aplicado o padrão na conexão ao banco de dados, com isso, conexões desnecessárias são evitadas melhorando o desempenho e uso eficiente dos recursos do banco        de dados e, por existir apenas uma instância de conexão, evita problemas relacionados a múltiplas instâncias de conexão concorrentes, como conflitos de                 transação ou problemas de sincronização.
+  - Factory:
+    - Foi aplicado o padrão com a finalidade de resolver os problemas de acoplamento entre o código do cliente e as classes do produto. Ao centralizar a lógica de            criação dos objetos, simplificou o código e reduziu a duplicação em alguns pontos do sistema. Também, ficou mais simples de adicionar, remover ou                       substituir objetos criados pela fábrica sem alterar o código que a utiliza, tornando o sistema mais adaptável a mudanças de requisitos ou acomodação                    de diferentes variantes de objetos.
 
 ![Version](https://img.shields.io/badge/version-v3.1.0-blue)
 
