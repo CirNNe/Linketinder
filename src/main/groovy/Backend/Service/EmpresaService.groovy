@@ -38,11 +38,10 @@ class EmpresaService implements EmpresaServiceInterface {
         }
     }
 
-    boolean exibeEmpresa(long cnpj) {
+    EmpresaInterface exibeEmpresa(long cnpj) {
         try {
             EmpresaInterface empresa = recebeDadosEmpresas(cnpj)
-            println(empresa)
-            return true
+            return empresa
         } catch (Exception e) {
             throw new Exception("Erro ao tentar exibir os dados da empresa: " + e)
         }
@@ -58,12 +57,14 @@ class EmpresaService implements EmpresaServiceInterface {
         } catch (Exception e) {
             throw new Exception("Erro ao tentar salvar curtida ao candidato: " + e)
         }
-    }
+    } /** TODO: revisar após refatorar Vagas **/
 
     List<MatchInterface> recebeListaMatchsEmpresa(long cnpj) {
         try {
-            List<MatchInterface> lista = empresaDAO.buscaMatchsEmpresa(cnpj)
-            return lista
+            if(validatorService.validaCnpj(cnpj)) {
+                List<MatchInterface> lista = empresaDAO.buscaMatchsEmpresa(cnpj)
+                return lista
+            }
         } catch (Exception e) {
             throw new Exception("Erro ao tentar receber a lista de matchs da empresa: " + e)
         }
@@ -72,23 +73,20 @@ class EmpresaService implements EmpresaServiceInterface {
     List formataListaMatchsEmpresa(long cnpj) {
         try {
             List<MatchInterface> lista = recebeListaMatchsEmpresa(cnpj)
-            List listaFinal = new ArrayList()
+            List listaFormatada = new ArrayList()
             for(int posicao = 0; posicao < lista.size(); posicao++) {
-                listaFinal.add("Candidato: " + lista[posicao]['nomeCandidato'])
+                listaFormatada.add("Candidato: " + lista[posicao]['nomeCandidato'])
             }
-            return listaFinal
+            return listaFormatada
         } catch (Exception e) {
             throw new Exception("Erro ao tentar formatar a lista de matchs da empresa: " + e)
         }
     }
 
-    boolean exibeListaMatchsEmpresa(long cnpj) {
+    List exibeListaMatchsEmpresa(long cnpj) {
         try {
             List lista = formataListaMatchsEmpresa(cnpj)
-            for(int posicao = 0; posicao < lista.size(); posicao++) {
-                println(lista[posicao])
-            }
-            return true
+            return lista
         } catch (Exception e) {
             throw new Exception("Erro ao tentar exibir a lista de matchs da empresa: " + e)
         }

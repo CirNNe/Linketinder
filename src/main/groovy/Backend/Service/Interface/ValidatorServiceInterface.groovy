@@ -13,8 +13,6 @@ interface ValidatorServiceInterface {
 
     boolean validaDadosNovaEmpresa(EmpresaInterface empresa)
 
-    boolean validaDadosNovaVaga(VagaInterface vaga)
-
     Integer validaTipoUsuario(long identificacao)
 
     boolean validaCpf(long cpf)

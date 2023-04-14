@@ -45,3 +45,4 @@ build.gradle
 .classpath
 .project
 .settings/
+/src/main/Frontend/node_modules/

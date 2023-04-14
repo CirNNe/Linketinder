@@ -10,22 +10,19 @@ import Backend.Controller.PaisController
 import Backend.Controller.VagaController
 import Backend.Model.DAO.CandidatoDAO
 import Backend.Model.DAO.CompetenciaDAO
-import Backend.Model.DAO.ConexaoBancoDados
 import Backend.Model.DAO.EmpresaDAO
 import Backend.Model.DAO.GenericDAO
 import Backend.Model.DAO.Interface.CandidatoDAOInterface
 import Backend.Model.DAO.Interface.CompetenciaDAOInterface
-import Backend.Model.DAO.Interface.ConexaoBancoDadosInterface
 import Backend.Model.DAO.Interface.EmpresaDAOInterface
 import Backend.Model.DAO.Interface.GenericDAOInterface
-import Backend.Model.DAO.Interface.PaisDAOInterface
 import Backend.Model.DAO.Interface.VagaDAOInterface
-import Backend.Model.DAO.PaisDAO
 import Backend.Model.DAO.VagaDAO
 import Backend.Model.Entidade.Candidato
 import Backend.Model.Entidade.Competencia
 import Backend.Model.Entidade.Interface.CandidatoInterface
 import Backend.Model.Entidade.Interface.CompetenciaInterface
+import Backend.Model.Entidade.Pais
 import Backend.Service.CandidatoService
 import Backend.Service.CompetenciaService
 import Backend.Service.Interface.CandidatoServiceInterface
@@ -41,26 +38,25 @@ import Backend.Util.Regex.RegexValidaDadosNovoUsuario
 
 class CandidatoViewer {
 
-    ConexaoBancoDadosInterface conexaoBancoDados = new ConexaoBancoDados()
-    GenericDAOInterface genericDAO = new GenericDAO(conexaoBancoDados)
+    GenericDAOInterface genericDAO = new GenericDAO()
 
-    PaisDAOInterface paisDAO = new PaisDAO(conexaoBancoDados)
     RegexValidaDadosNovoUsuario regexUsuario = new RegexValidaDadosNovoUsuario()
     RegexValidaDadosNovaVaga regexVaga = new RegexValidaDadosNovaVaga()
 
-    EmpresaDAOInterface empresaDAO = new EmpresaDAO(conexaoBancoDados, genericDAO, paisDAO)
+    EmpresaDAOInterface empresaDAO = new EmpresaDAO(genericDAO)
 
-    VagaDAOInterface vagaDAO = new VagaDAO(genericDAO, empresaDAO, paisDAO, conexaoBancoDados)
-    VagaServiceInterface vagaService = new VagaService(vagaDAO, validatorService)
+    VagaDAOInterface vagaDAO = new VagaDAO(genericDAO, empresaDAO)
+    VagaServiceInterface vagaService = new VagaService(vagaDAO, validatorService, regexVaga, regexUsuario)
 
     ValidatorServiceInterface validatorService = new ValidatorService(regexUsuario, regexVaga, vagaDAO, candidatoDAO,
-                                                                        empresaDAO, paisDAO)
-    CompetenciaDAOInterface competenciaDAO = new CompetenciaDAO(conexaoBancoDados, candidatoDAO, genericDAO, validatorService)
+                                                                        empresaDAO)
+    CompetenciaDAOInterface competenciaDAO = new CompetenciaDAO()
     CompetenciaServiceInterface competenciaService = new CompetenciaService(competenciaDAO, validatorService)
 
-    CandidatoDAOInterface candidatoDAO = new CandidatoDAO(conexaoBancoDados, genericDAO, vagaDAO, paisDAO)
+    CandidatoDAOInterface candidatoDAO = new CandidatoDAO(genericDAO, vagaDAO)
     CandidatoServiceInterface candidatoService = new CandidatoService(candidatoDAO, validatorService)
-    PaisServiceInterface paisService = new PaisService(validatorService, paisDAO)
+    Pais pais = new Pais()
+    PaisServiceInterface paisService = new PaisService(validatorService, pais)
 
     CandidatoControllerInterface candidatoController = new CandidatoController(candidatoService)
     VagaControllerInterface vagaController = new VagaController(vagaService)
@@ -120,11 +116,15 @@ class CandidatoViewer {
         int cep = Integer.parseInt(inputCandidato.nextLine())
 
         println('-' * 20)
-        paisController.listaPaises()
+        List listaPaises = paisController.listaPaises()
+        for(int posicao = 0; posicao < listaPaises.size(); posicao++) {
+            println(listaPaises[posicao])
+        }
         println('-' * 20)
         println("DIGITE O PAÍS DO CANDIDATO")
         String pais = inputCandidato.nextLine()
-        while (!validatorService.validaEscolhaPais(pais)) {
+        while (!listaPaises.contains(pais)) {
+            println("País inválido, digite novamente!")
             pais = inputCandidato.nextLine()
         }
 
@@ -180,11 +180,16 @@ class CandidatoViewer {
         println("INFORME SEU CPF:")
         long cpf = inputCpf.nextLong()
 
-        candidatoController.exibePerfilCandidato(cpf)
+        println(candidatoController.exibePerfilCandidato(cpf))
     }
 
     void vagasDisponiveis() {
-        vagaController.listaVagasGerais()
+        List lista = vagaController.listaVagasGerais()
+
+        for(int posicao = 0; posicao < lista.size(); posicao++) {
+            println(lista[posicao])
+            println('-' * 100)
+        }
     }
 
     void curtirVaga() {
@@ -205,6 +210,10 @@ class CandidatoViewer {
         println("INFORME SEU CPF:")
         long cpf = inputCpfCandidato.nextLong()
 
-        candidatoController.listaMatchsCandidato(cpf)
+        List lista = candidatoController.listaMatchsCandidato(cpf)
+
+        for(int posicao = 0; posicao < lista.size(); posicao++) {
+            println(lista[posicao])
+        }
     }
 }

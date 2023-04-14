@@ -6,9 +6,9 @@ interface EmpresaServiceInterface {
 
     boolean salvaDadosNovaEmpresa(EmpresaInterface empresa)
 
-    boolean exibeEmpresa(long cnpj)
+    EmpresaInterface exibeEmpresa(long cnpj)
 
     boolean salvaCurtidaEmpresa(long cnpj, int idCandidato)
 
-    boolean exibeListaMatchsEmpresa(long cnpj)
+    List exibeListaMatchsEmpresa(long cnpj)
 }

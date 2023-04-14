@@ -6,8 +6,8 @@ interface VagaControllerInterface {
 
     void recebeDadosVaga(VagaInterface vaga)
 
-    void listaVagasEmpresa(long cnpj)
+    List listaVagasEmpresa(long cnpj)
 
-    void listaVagasGerais()
+    List listaVagasGerais()
 
 }

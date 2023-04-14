@@ -24,6 +24,6 @@ class Candidato implements CandidatoInterface {
                 'CEP: ' + cep + ' - ' +
                 'País: ' + pais + ' - ' +
                 'Descrição Pessoal: ' + descricaoPessoal + ' - ' +
-                'Competências: ' + competencias
+                'Competências: ' + competencias.toString().replaceAll(/[\[\]{}]/, '')
     }
 }

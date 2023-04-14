@@ -6,11 +6,11 @@ interface CandidatoControllerInterface {
 
     void recebeDadosNovoCandidato(CandidatoInterface candidato)
 
-    void listaCandidatos()
+    List listaCandidatos()
 
-    void exibePerfilCandidato(long cpf)
+    CandidatoInterface exibePerfilCandidato(long cpf)
 
     void curtirVaga(long cpf, int idVaga)
 
-    void listaMatchsCandidato(long cpf)
+    List listaMatchsCandidato(long cpf)
 }

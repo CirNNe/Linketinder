@@ -7,8 +7,10 @@ import Backend.Model.Entidade.Interface.VagaInterface
 import Backend.Model.Entidade.Vaga
 import Backend.Service.Interface.VagaServiceInterface
 import Backend.Service.Interface.ValidatorServiceInterface
+import Backend.Util.Regex.RegexValidaDadosNovaVaga
+import Backend.Util.Regex.RegexValidaDadosNovoUsuario
 import org.junit.jupiter.api.Test
-import static org.junit.jupiter.api.Assertions.assertTrue
+import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.when
 
@@ -16,23 +18,28 @@ class VagaServiceTest {
 
     VagaDAOInterface vagaDAO = mock(VagaDAO.class)
     ValidatorServiceInterface validatorService = mock(ValidatorService.class)
-    VagaServiceInterface vagaService = new VagaService(vagaDAO, validatorService)
+    RegexValidaDadosNovoUsuario regexUsuario = mock(RegexValidaDadosNovoUsuario.class)
+    RegexValidaDadosNovaVaga regexVaga = mock(RegexValidaDadosNovaVaga.class)
+    VagaServiceInterface vagaService = new VagaService(vagaDAO, validatorService, regexVaga, regexUsuario)
 
     @Test
-    void salvaDadosNovaVagaTest() {
+    void exibeListaVagasEmpresaTest() {
 
+        long cnpj = 12345678912345
+        List<VagaInterface> lista = new ArrayList<>()
         VagaInterface vaga = new Vaga()
-        vaga.nome = "Tester Jr"
-        vaga.cnpj = 12345678912345
+        vaga.nome = "Vaguinha"
+        vaga.empresa = "ZG SOlutions"
+        vaga.cnpj = cnpj
         vaga.pais = "Brasil"
-        vaga.descricao = "Descricao"
         vaga.competencias = ["Java", "Groovy"] as List<Competencia>
+        vaga.descricao = "Descricao"
+        lista.add(vaga)
 
-        when(validatorService.validaDadosNovaVaga(vaga)).thenReturn(true)
-        when(vagaDAO.insereDadosVagas(vaga)).thenReturn(true)
+        when(vagaService.recebeListaVagasEmpresa(cnpj)).thenReturn(lista)
 
-        boolean resultado = vagaService.salvaDadosNovaVaga(vaga)
+        List resultado = vagaService.exibeListaVagasEmpresa(cnpj)
 
-        assertTrue(resultado)
+        assertEquals(resultado, lista)
     }
 }

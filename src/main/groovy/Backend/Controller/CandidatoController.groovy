@@ -16,20 +16,20 @@ class CandidatoController implements CandidatoControllerInterface{
         candidatoService.salvaDadosNovoCandidato(candidato)
     }
 
-    void listaCandidatos() {
-        candidatoService.exibeListaCandidatos()
+    List listaCandidatos() {
+        return candidatoService.exibeListaCandidatos()
     }
 
 
-    void exibePerfilCandidato(long cpf) {
-        candidatoService.exibirPerfilCandidato(cpf)
+    CandidatoInterface exibePerfilCandidato(long cpf) {
+        return candidatoService.exibirPerfilCandidato(cpf)
     }
 
     void curtirVaga(long cpf, int idVaga) {
         candidatoService.salvaCurtidaDoCadidato(cpf, idVaga)
     }
 
-    void listaMatchsCandidato(long cpf) {
-        candidatoService.exibeListaMatchsCandidato(cpf)
+    List listaMatchsCandidato(long cpf) {
+        return candidatoService.exibeListaMatchsCandidato(cpf)
     }
 }

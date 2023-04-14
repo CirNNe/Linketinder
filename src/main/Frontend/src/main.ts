@@ -47,9 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const inputPaisNovaEmpresa = document.querySelector("#pais-nova-empresa") as HTMLInputElement
     const inputDescricaoNovaEmpresa = document.querySelector("#descricao-nova-empresa") as HTMLInputElement
 
-
-
-
     /* FUNÇÕES EMPRESA */
     if(botaoOpcaoCadastrarEmpresa) {
         botaoOpcaoCadastrarEmpresa.addEventListener('click', function () {
@@ -68,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function validaDadosEmpresa(empresa: any) {
         if (!empresa.nome.match(/^.{3,250}$/gi)) {
             alert("Nome inválido!")
-        } else if (!empresa.email.match(/\S+@\w+\.\w{2,6}(\.\w{2})?/g)) {
+        } else if (!empresa.email.match(/^\S+@\w+\.\w{2,6}(\.\w{2})?$/g)) {
             alert("E-mail inválido!")
         } else if (!empresa.cnpj.match(/^([0-9]{2}[0-9]{3}[0-9]{3}[0-9]{4}[0-9]{2})$/g)) {
             alert("CNPJ inválido")
@@ -629,5 +626,4 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const myChart = new Chart(canvas, config)
-
 })

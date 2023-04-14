@@ -53,13 +53,10 @@ class CandidatoService implements CandidatoServiceInterface {
         return listaFormatada
     }
 
-    boolean exibeListaCandidatos() {
+    List exibeListaCandidatos() {
         try {
             List lista = formataLeituraListaCandidatos()
-            for(int posicao = 0; posicao < lista.size(); posicao++) {
-                println(lista[posicao])
-            }
-            return true
+            return lista
         } catch (Exception e) {
             throw new Exception("Erro ao tentar exibir a lista de candidatos: " + e)
         }
@@ -76,15 +73,10 @@ class CandidatoService implements CandidatoServiceInterface {
         }
     }
 
-    boolean exibirPerfilCandidato(long cpf) {
+    CandidatoInterface exibirPerfilCandidato(long cpf) {
         try {
             CandidatoInterface candidato = recebeDadosCandidato(cpf)
-            println("ID: " + candidato.id + "\n" + "Nome: " + candidato.nome + "\n" +
-                    "E-mail: " + candidato.email + "\n" + "Data de Nascimento: " + candidato.dataNascimento + "\n" +
-                    "CPF: " + candidato.cpf + "\n" + "CEP: " + candidato.cep + "\n" + "País: " + candidato.pais + "\n" +
-                    "Descrição Pessoal: " + candidato.descricaoPessoal + "\n" +
-                    "Competências: " + candidato.competencias.toString().replaceAll(/[\[\]{}]/, ''))
-            return true
+            return candidato
         } catch (Exception e) {
             throw new Exception("Erro ao tentar exibir os dados do candidato: " + e)
         }
@@ -100,7 +92,7 @@ class CandidatoService implements CandidatoServiceInterface {
             throw new Exception("Erro ao tentar realizar a curtidada à vaga: " + e)
         }
         return false
-    }
+    } /** TODO: revisar após refatorar Vagas **/
 
     List<MatchInterface> recebeListaMatchsCandidato(long cpf) {
         try {
@@ -114,21 +106,22 @@ class CandidatoService implements CandidatoServiceInterface {
     }
 
     List<MatchInterface> formataListaMatchsCandidato(long cpf) {
-        List<MatchInterface> lista =  recebeListaMatchsCandidato(cpf)
-        List listaFormatada = new ArrayList()
-        for(int posicao = 0; posicao < lista.size(); posicao++) {
-            listaFormatada.add(lista[posicao]['nomeEmpresa'])
+        try {
+            List<MatchInterface> lista =  recebeListaMatchsCandidato(cpf)
+            List listaFormatada = new ArrayList()
+            for(int posicao = 0; posicao < lista.size(); posicao++) {
+                listaFormatada.add("Empresa: " + lista[posicao]['nomeEmpresa'])
+            }
+            return listaFormatada
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar formatar lista de matchs do candidato: " + e)
         }
-        return listaFormatada
     }
 
-    boolean exibeListaMatchsCandidato(long cpf) {
+    List exibeListaMatchsCandidato(long cpf) {
         try {
             List lista = formataListaMatchsCandidato(cpf)
-            for(int posicao = 0; posicao < lista.size(); posicao++) {
-                println("Empresa: " + lista[posicao] + "\n")
-            }
-            return true
+            return lista
         } catch (Exception e) {
             throw new Exception("Erro ao tentar exibir a lista de matchs: " + e)
         }

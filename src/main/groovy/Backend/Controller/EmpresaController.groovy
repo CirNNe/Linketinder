@@ -16,15 +16,15 @@ class EmpresaController implements EmpresaControllerInterface{
         empresaService.salvaDadosNovaEmpresa(empresa)
     }
 
-    void perfilEmpresa(long cnpj) {
-        empresaService.exibeEmpresa(cnpj)
+    EmpresaInterface perfilEmpresa(long cnpj) {
+        return empresaService.exibeEmpresa(cnpj)
     }
 
     void curtirCandidato(long cnpj, int idCandidato) {
         empresaService.salvaCurtidaEmpresa(cnpj, idCandidato)
     }
 
-    void listaMatchsEmpresa(long cnpj) {
-        empresaService.exibeListaMatchsEmpresa(cnpj)
+    List listaMatchsEmpresa(long cnpj) {
+        return empresaService.exibeListaMatchsEmpresa(cnpj)
     }
 }

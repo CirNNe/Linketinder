@@ -72,6 +72,7 @@ class EmpresaServiceTest {
 
         long cnpj = 12345678912345
 
+        when(validatorService.validaCnpj(cnpj)).thenReturn(true)
         when(empresaService.recebeListaMatchsEmpresa(cnpj)).thenReturn(lista)
 
         List resultado = empresaService.formataListaMatchsEmpresa(cnpj)

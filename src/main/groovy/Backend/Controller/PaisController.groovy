@@ -11,7 +11,7 @@ class PaisController implements PaisControllerInterface {
         this.paisService = paisService
     }
 
-    void listaPaises() {
-        paisService.exibeListaPaises()
+    List listaPaises() {
+        return paisService.recebeListaPaises()
     }
 }

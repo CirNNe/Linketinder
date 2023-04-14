@@ -6,7 +6,7 @@ interface VagaServiceInterface {
 
     boolean salvaDadosNovaVaga(VagaInterface vaga)
 
-    boolean exibeListaVagasEmpresa(long cnpj)
+    List exibeListaVagasEmpresa(long cnpj)
 
-    boolean exibeListaVagasGerais()
+    List exibeListaVagasGerais()
 }

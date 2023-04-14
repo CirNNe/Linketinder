@@ -16,11 +16,11 @@ class VagaController implements VagaControllerInterface {
         vagaService.salvaDadosNovaVaga(vaga)
     }
 
-    void listaVagasEmpresa(long cnpj) {
-        vagaService.exibeListaVagasEmpresa(cnpj)
+    List listaVagasEmpresa(long cnpj) {
+        return vagaService.exibeListaVagasEmpresa(cnpj)
     }
 
-    void listaVagasGerais() {
-        vagaService.exibeListaVagasGerais()
+    List listaVagasGerais() {
+        return vagaService.exibeListaVagasGerais()
     }
 }

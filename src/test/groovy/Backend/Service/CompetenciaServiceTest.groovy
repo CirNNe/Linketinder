@@ -18,20 +18,18 @@ class CompetenciaServiceTest {
     CompetenciaServiceInterface competenciaService = new CompetenciaService(competenciaDAO, validatorService)
 
     @Test
-    void salvaNovaCompetencia() {
+    void filtraCompetenciaDaLista() {
 
-        List<CompetenciaInterface> lista = new ArrayList<>()
-        CompetenciaInterface competencia = new Competencia()
-        competencia.nome = "Java"
-        lista.add(competencia)
-        Integer idVaga = 1
-        long identificacao = 70247122440
+        Integer id = 1
+        long identificacao = 11111111111
+        CompetenciaInterface commpetencia = new Competencia()
+        commpetencia.nome = "Java"
+        List<CompetenciaInterface> listaCompetencias = new ArrayList<>()
+        listaCompetencias.add(commpetencia)
 
-        when(validatorService.validaDadosNovaCompetencia(lista)).thenReturn(true)
-
-        boolean resultado = competenciaService.recebeNovaCompetencia(idVaga, identificacao, lista)
+        boolean resultado = competenciaService.filtraCompetenciaDaLista(id, identificacao, listaCompetencias)
 
         Assertions.assertTrue(resultado)
-    }
 
+    }
 }

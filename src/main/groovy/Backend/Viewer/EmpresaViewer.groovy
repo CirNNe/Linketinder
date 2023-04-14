@@ -20,15 +20,14 @@ import Backend.Model.DAO.Interface.CompetenciaDAOInterface
 import Backend.Model.DAO.Interface.ConexaoBancoDadosInterface
 import Backend.Model.DAO.Interface.EmpresaDAOInterface
 import Backend.Model.DAO.Interface.GenericDAOInterface
-import Backend.Model.DAO.Interface.PaisDAOInterface
 import Backend.Model.DAO.Interface.VagaDAOInterface
-import Backend.Model.DAO.PaisDAO
 import Backend.Model.DAO.VagaDAO
 import Backend.Model.Entidade.Competencia
 import Backend.Model.Entidade.Empresa
 import Backend.Model.Entidade.Interface.CompetenciaInterface
 import Backend.Model.Entidade.Interface.EmpresaInterface
 import Backend.Model.Entidade.Interface.VagaInterface
+import Backend.Model.Entidade.Pais
 import Backend.Model.Entidade.Vaga
 import Backend.Service.CandidatoService
 import Backend.Service.CompetenciaService
@@ -47,28 +46,27 @@ import Backend.Util.Regex.RegexValidaDadosNovoUsuario
 
 class EmpresaViewer {
 
-    ConexaoBancoDadosInterface conexaoBancoDados = new ConexaoBancoDados()
-    GenericDAOInterface genericDAO = new GenericDAO(conexaoBancoDados)
+    GenericDAOInterface genericDAO = new GenericDAO()
 
-    PaisDAOInterface paisDAO = new PaisDAO(conexaoBancoDados)
     RegexValidaDadosNovoUsuario regexUsuario = new RegexValidaDadosNovoUsuario()
     RegexValidaDadosNovaVaga regexVaga = new RegexValidaDadosNovaVaga()
 
-    EmpresaDAOInterface empresaDAO = new EmpresaDAO(conexaoBancoDados, genericDAO, paisDAO)
+    EmpresaDAOInterface empresaDAO = new EmpresaDAO(genericDAO)
 
-    VagaDAOInterface vagaDAO = new VagaDAO(genericDAO, empresaDAO, paisDAO, conexaoBancoDados)
-    VagaServiceInterface vagaService = new VagaService(vagaDAO, validatorService)
+    VagaDAOInterface vagaDAO = new VagaDAO(genericDAO, empresaDAO)
+    VagaServiceInterface vagaService = new VagaService(vagaDAO, validatorService, regexVaga, regexUsuario)
 
     ValidatorServiceInterface validatorService = new ValidatorService(regexUsuario, regexVaga, vagaDAO, candidatoDAO,
-                                                                        empresaDAO, paisDAO)
+                                                                        empresaDAO)
 
-    CandidatoDAOInterface candidatoDAO = new CandidatoDAO(conexaoBancoDados, genericDAO, vagaDAO, paisDAO)
+    CandidatoDAOInterface candidatoDAO = new CandidatoDAO(genericDAO, vagaDAO)
     CandidatoServiceInterface candidatoService = new CandidatoService(candidatoDAO, validatorService)
 
-    CompetenciaDAOInterface competenciaDAO = new CompetenciaDAO(conexaoBancoDados, candidatoDAO, genericDAO, validatorService)
+    CompetenciaDAOInterface competenciaDAO = new CompetenciaDAO()
     CompetenciaServiceInterface competenciaService = new CompetenciaService(competenciaDAO, validatorService)
 
-    PaisServiceInterface paisService = new PaisService(validatorService, paisDAO)
+    Pais pais = new Pais()
+    PaisServiceInterface paisService = new PaisService(validatorService, pais)
 
     CandidatoControllerInterface candidatoController = new CandidatoController(candidatoService)
     VagaControllerInterface vagaController = new VagaController(vagaService)
@@ -135,11 +133,15 @@ class EmpresaViewer {
         int cep = Integer.parseInt(inputEmpresa.nextLine())
 
         println('-' * 20)
-        paisController.listaPaises()
+        List listaPaises = paisController.listaPaises()
+        for(int posicao = 0; posicao < listaPaises.size(); posicao++) {
+            println(listaPaises[posicao])
+        }
         println('-' * 20)
         println("DIGITE O PAÍS DA EMPRESA")
         String pais = inputEmpresa.nextLine()
-        while (!validatorService.validaEscolhaPais(pais)) {
+        while (!listaPaises.contains(pais)) {
+            println("País inválido, digite novamente!")
             pais = inputEmpresa.nextLine()
         }
 
@@ -170,7 +172,7 @@ class EmpresaViewer {
         println("INFORME O CNPJ DA EMPRESA: ")
         long cnpj = inputCNPJ.nextLong()
 
-        empresaController.perfilEmpresa(cnpj)
+        println(empresaController.perfilEmpresa(cnpj))
     }
 
     void formularioCadastroVaga() {
@@ -179,9 +181,6 @@ class EmpresaViewer {
         println("DIGITE O NOME DA VAGA")
         String nome = inputVaga.nextLine()
 
-//        println("DIGITE O NOME DA EMPRESA")
-//        String empresa = inputVaga.nextLine()
-
         println("DIGITE O CNPJ DA EMPRESA")
         long cnpj = Long.parseLong(inputVaga.nextLine())
 
@@ -189,11 +188,15 @@ class EmpresaViewer {
         String descricao = inputVaga.nextLine()
 
         println('-' * 20)
-        paisController.listaPaises()
+        List listaPaises = paisController.listaPaises()
+        for(int posicao = 0; posicao < listaPaises.size(); posicao++) {
+            println(listaPaises[posicao])
+        }
         println('-' * 20)
-        println("DIGITE O PAÍS DE ATUAÇÃO")
+        println("DIGITE O PAÍS DE ATUAÇÃO DA VAGA")
         String pais = inputVaga.nextLine()
-        while (!validatorService.validaEscolhaPais(pais)) {
+        while (!listaPaises.contains(pais)) {
+            println("País inválido, digite novamente!")
             pais = inputVaga.nextLine()
         }
 
@@ -201,7 +204,6 @@ class EmpresaViewer {
         println("DIGITE AS COMPETÊNCIAS PARA VAGA")
         competencia.nome = inputVaga.nextLine()
         listaDeCompetencias << competencia
-
         while (true) {
             Scanner inputCompetencia = new Scanner(System.in)
             int opcaoCompetencia
@@ -221,8 +223,8 @@ class EmpresaViewer {
 
         vaga.nome = nome
         vaga.cnpj = cnpj
-        vaga.descricao = descricao
         vaga.pais = pais
+        vaga.descricao = descricao
 
         if(empresaDAO.buscaIdEmpresa(cnpj) != null) {
             vagaController.recebeDadosVaga(vaga)
@@ -239,11 +241,19 @@ class EmpresaViewer {
         println("INFORME O CNPJ DA EMPRESA")
         long cnpj = inputCnpj.nextLong()
 
-        vagaController.listaVagasEmpresa(cnpj)
+        List lista = vagaController.listaVagasEmpresa(cnpj)
+
+        for(int posicao = 0; posicao < lista.size(); posicao++) {
+            println(lista[posicao])
+            println('-' * 100)
+        }
     }
 
     void listaDeCandidatos() {
-        candidatoController.listaCandidatos()
+        List lista = candidatoController.listaCandidatos()
+        for(int posicao = 0; posicao < lista.size(); posicao++) {
+            println(lista[posicao])
+        }
     }
 
     void curtirCandidato() {
@@ -264,6 +274,10 @@ class EmpresaViewer {
         println("INFORME O CNPJ DA EMPRESA:")
         long cnpj = inputCnpjEmpresa.nextLong()
 
-        empresaController.listaMatchsEmpresa(cnpj)
+        List lista = empresaController.listaMatchsEmpresa(cnpj)
+
+        for(int posicao = 0; posicao < lista.size(); posicao++) {
+            println(lista[posicao])
+        }
     }
 }

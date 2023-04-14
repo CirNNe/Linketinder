@@ -13,6 +13,6 @@ class CompetenciaController implements CompetenciaControllerInterface {
     }
 
     boolean recebeDadosNovaCompetencia(Integer id, long identificacao, List<CompetenciaInterface> listaCompetencias) {
-        competenciaService.recebeNovaCompetencia(id, identificacao, listaCompetencias)
+        competenciaService.recebeDadosNovaCompetencia(id, identificacao, listaCompetencias)
     }
 }

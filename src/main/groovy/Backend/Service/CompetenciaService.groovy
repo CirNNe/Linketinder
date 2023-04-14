@@ -17,17 +17,26 @@ class CompetenciaService implements CompetenciaServiceInterface {
         this.validatorService = validatorService
     }
 
-    boolean recebeNovaCompetencia(Integer id, long identificacao, List<CompetenciaInterface> listaCompetencias) {
+    boolean recebeDadosNovaCompetencia(Integer id, long identificacao, List<CompetenciaInterface> listaCompetencias) {
         try {
             if(validatorService.validaDadosNovaCompetencia(listaCompetencias)) {
-                for(int posicao = 0; posicao < listaCompetencias.size(); posicao++) {
-                    CompetenciaInterface nome = listaCompetencias[posicao]
-                    salvaNovaCompetencia(id, identificacao, nome)
-                }
-                return true
+                filtraCompetenciaDaLista(id, identificacao, listaCompetencias)
             }
+            return true
         } catch (Exception e) {
             throw new Exception("Erro ao tentar salvar os dados da nova competencia: " + e)
+        }
+    }
+
+    boolean filtraCompetenciaDaLista(Integer id, long identificacao, List<CompetenciaInterface> listaCompetencias) {
+        try {
+            for(int posicao = 0; posicao < listaCompetencias.size(); posicao++) {
+                CompetenciaInterface nome = listaCompetencias[posicao]
+                salvaNovaCompetencia(id, identificacao, nome)
+            }
+            return true
+        } catch (Exception e) {
+            throw new Exception("Erro ao tentar filtrar as competências da lista recebida: " + e)
         }
     }
 
@@ -37,7 +46,7 @@ class CompetenciaService implements CompetenciaServiceInterface {
             if(validatorService.validaTipoUsuario(identificacao) == 1) {
                 sql = "INSERT INTO competencias(nome, id_candidato) VALUES(?, ?)"
             } else if(validatorService.validaTipoUsuario(identificacao) == 2) {
-                sql = "INSERT INTO competencias(nome, id_vagas) VALUES(?, ?)"
+                sql = "INSERT INTO competencias(nome, id_vaga) VALUES(?, ?)"
             }
             competenciaDAO.insereCompetencia(sql, id, competencia)
             return true

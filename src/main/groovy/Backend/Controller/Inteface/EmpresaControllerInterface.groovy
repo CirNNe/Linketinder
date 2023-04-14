@@ -6,10 +6,10 @@ interface EmpresaControllerInterface {
 
     void recebeDadosNovaEmpresa(EmpresaInterface empresa)
 
-    void perfilEmpresa(long cnpj)
+    EmpresaInterface perfilEmpresa(long cnpj)
 
     void curtirCandidato(long cnpj, int idCandidato)
 
-    void listaMatchsEmpresa(long cnpj)
+    List listaMatchsEmpresa(long cnpj)
 
 }

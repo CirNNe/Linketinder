@@ -4,12 +4,12 @@ import Backend.Model.Entidade.Interface.VagaInterface
 
 class Vaga implements VagaInterface {
 
+    int id
     String nome
     String empresa
     long cnpj
-    String descricao
     String pais
-    int id
+    String descricao
     List<Competencia> competencias
 
     @Override
@@ -17,8 +17,9 @@ class Vaga implements VagaInterface {
         return "ID: " + id + " - " +
                 "Nome: " + nome + " - " +
                 "Empresa: " + empresa + " - " +
-                "Descrição: " + descricao + " - " +
+                "CNPJ: " + cnpj + " - " +
                 "País: " + pais + " - " +
+                "Descrição: " + descricao + " - " +
                 "Competências: " + competencias.toString().replaceAll(/[\[\]{}]/, '')
     }
 }

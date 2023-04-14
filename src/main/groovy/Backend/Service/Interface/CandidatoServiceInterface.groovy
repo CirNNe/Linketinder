@@ -6,14 +6,14 @@ interface CandidatoServiceInterface {
 
     boolean salvaDadosNovoCandidato(CandidatoInterface candidato)
 
-    boolean exibeListaCandidatos()
+    List exibeListaCandidatos()
 
-    boolean exibirPerfilCandidato(long cpf)
+    CandidatoInterface exibirPerfilCandidato(long cpf)
 
     boolean salvaCurtidaDoCadidato(long cpf, int idVaga)
 
 //    void formataLeituraListaDeMathcs(long cpf)
 
-    boolean exibeListaMatchsCandidato(long cpf)
+    List exibeListaMatchsCandidato(long cpf)
 
 }
