@@ -1,80 +1,29 @@
 package Backend.Viewer
 
-import Backend.Controller.CandidatoController
-import Backend.Controller.CompetenciaController
-import Backend.Controller.EmpresaController
 import Backend.Controller.Inteface.CandidatoControllerInterface
 import Backend.Controller.Inteface.CompetenciaControllerInterface
 import Backend.Controller.Inteface.EmpresaControllerInterface
 import Backend.Controller.Inteface.PaisControllerInterface
 import Backend.Controller.Inteface.VagaControllerInterface
-import Backend.Controller.PaisController
-import Backend.Controller.VagaController
-import Backend.Model.DAO.CandidatoDAO
-import Backend.Model.DAO.CompetenciaDAO
-import Backend.Model.DAO.ConexaoBancoDados
-import Backend.Model.DAO.EmpresaDAO
-import Backend.Model.DAO.GenericDAO
-import Backend.Model.DAO.Interface.CandidatoDAOInterface
-import Backend.Model.DAO.Interface.CompetenciaDAOInterface
-import Backend.Model.DAO.Interface.ConexaoBancoDadosInterface
-import Backend.Model.DAO.Interface.EmpresaDAOInterface
-import Backend.Model.DAO.Interface.GenericDAOInterface
-import Backend.Model.DAO.Interface.VagaDAOInterface
-import Backend.Model.DAO.VagaDAO
+import Backend.Factory.FactoryController.CandidatoControllerFactory
+import Backend.Factory.FactoryController.CompetenciaControllerFactory
+import Backend.Factory.FactoryController.EmpresaControllerFactory
+import Backend.Factory.FactoryController.PaisControllerFactory
+import Backend.Factory.FactoryController.VagaControllerFactory
 import Backend.Model.Entidade.Competencia
 import Backend.Model.Entidade.Empresa
 import Backend.Model.Entidade.Interface.CompetenciaInterface
 import Backend.Model.Entidade.Interface.EmpresaInterface
 import Backend.Model.Entidade.Interface.VagaInterface
-import Backend.Model.Entidade.Pais
 import Backend.Model.Entidade.Vaga
-import Backend.Service.CandidatoService
-import Backend.Service.CompetenciaService
-import Backend.Service.EmpresaService
-import Backend.Service.Interface.CandidatoServiceInterface
-import Backend.Service.Interface.CompetenciaServiceInterface
-import Backend.Service.Interface.EmpresaServiceInterface
-import Backend.Service.Interface.PaisServiceInterface
-import Backend.Service.Interface.VagaServiceInterface
-import Backend.Service.Interface.ValidatorServiceInterface
-import Backend.Service.PaisService
-import Backend.Service.VagaService
-import Backend.Service.ValidatorService
-import Backend.Util.Regex.RegexValidaDadosNovaVaga
-import Backend.Util.Regex.RegexValidaDadosNovoUsuario
 
 class EmpresaViewer {
 
-    GenericDAOInterface genericDAO = new GenericDAO()
-
-    RegexValidaDadosNovoUsuario regexUsuario = new RegexValidaDadosNovoUsuario()
-    RegexValidaDadosNovaVaga regexVaga = new RegexValidaDadosNovaVaga()
-
-    EmpresaDAOInterface empresaDAO = new EmpresaDAO(genericDAO)
-
-    VagaDAOInterface vagaDAO = new VagaDAO(genericDAO, empresaDAO)
-    VagaServiceInterface vagaService = new VagaService(vagaDAO, validatorService, regexVaga, regexUsuario)
-
-    ValidatorServiceInterface validatorService = new ValidatorService(regexUsuario, regexVaga, vagaDAO, candidatoDAO,
-                                                                        empresaDAO)
-
-    CandidatoDAOInterface candidatoDAO = new CandidatoDAO(genericDAO, vagaDAO)
-    CandidatoServiceInterface candidatoService = new CandidatoService(candidatoDAO, validatorService)
-
-    CompetenciaDAOInterface competenciaDAO = new CompetenciaDAO()
-    CompetenciaServiceInterface competenciaService = new CompetenciaService(competenciaDAO, validatorService)
-
-    Pais pais = new Pais()
-    PaisServiceInterface paisService = new PaisService(validatorService, pais)
-
-    CandidatoControllerInterface candidatoController = new CandidatoController(candidatoService)
-    VagaControllerInterface vagaController = new VagaController(vagaService)
-
-    EmpresaServiceInterface empresaService = new EmpresaService(empresaDAO, validatorService)
-    EmpresaControllerInterface empresaController = new EmpresaController(empresaService)
-    CompetenciaControllerInterface competenciaController = new CompetenciaController(competenciaService)
-    PaisControllerInterface paisController = new PaisController(paisService)
+    EmpresaControllerInterface empresaController = new EmpresaControllerFactory().criaEmpresaController()
+    CompetenciaControllerInterface competenciaController = new CompetenciaControllerFactory().criaCompetenciaController()
+    PaisControllerInterface paisController = new PaisControllerFactory().criaPaisController()
+    VagaControllerInterface vagaController = new VagaControllerFactory().criaVagaController()
+    CandidatoControllerInterface candidatoController = new CandidatoControllerFactory().criaCandidatoController()
 
     EmpresaInterface empresa = new Empresa()
     VagaInterface vaga = new Vaga()
