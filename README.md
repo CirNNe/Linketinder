@@ -8,7 +8,7 @@
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
-![Version](https://img.shields.io/badge/version-v3.2.0-blue) 
+![Version](https://img.shields.io/badge/version-v3.3.0-blue) 
 
 
 Indice
@@ -29,6 +29,14 @@ pode curtir o perfil de um candidato e, também, o candidato pode curtir uma vag
 ---
 
 ## 🔖&nbsp; Versão
+
+![Version](https://img.shields.io/badge/version-v3.2.0-blue)
+
+- Padrão MVC
+  - Frontend refatorado com o padrão MVC:
+    - O padrão aplicado no Frontend simplificou a leitura e agilidade de execução código.
+  - Backend reavaliado:
+    - O padrão MVC no Backend foi reavaliado e foram feitos alguns ajustes pontuais.
 
 ![Version](https://img.shields.io/badge/version-v3.2.0-blue)
 
