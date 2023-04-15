@@ -9,7 +9,7 @@ class Match implements MatchInterface {
 
     @Override
     String toString() {
-        return "Nome Candidato: " + nomeCandidato + " - " +
+        return "Nome CandidatoEntidade: " + nomeCandidato + " - " +
                 "Nome Empresa: " + nomeEmpresa
     }
 }

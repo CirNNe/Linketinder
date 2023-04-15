@@ -127,7 +127,7 @@ class CandidatoViewer {
             Integer id = candidatoDAO.buscaIdCandidato(cpf)
             competenciaController.recebeDadosNovaCompetencia(id, cpf, listaDeCompetencias)
         } else {
-            println("Candidato já cadastrado com esse CPF!")
+            println("CandidatoEntidade já cadastrado com esse CPF!")
         }
     }
 

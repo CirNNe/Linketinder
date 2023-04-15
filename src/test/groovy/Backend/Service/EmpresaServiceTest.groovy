@@ -77,7 +77,7 @@ class EmpresaServiceTest {
 
         List resultado = empresaService.formataListaMatchsEmpresa(cnpj)
 
-        Assertions.assertEquals(resultado, ["Candidato: " + "Higor"])
+        Assertions.assertEquals(resultado, ["CandidatoEntidade: " + "Higor"])
 
     }
 

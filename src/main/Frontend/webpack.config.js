@@ -4,7 +4,14 @@ const CopyPlugin = require("copy-webpack-plugin");
 module.exports = {
 
     mode: 'production',
-    entry: './src/main.ts',
+    entry: [
+        './src/Candidato/CadastroCandidato.ts',
+        './src/Candidato/ExibeCandidato.ts',
+        './src/Empresa/CadastroEmpresa.ts',
+        './src/Vaga/CadastraVaga.ts',
+        './src/Vaga/ExibeVaga.ts',
+        './src/Grafico/GraficoCandidatos.ts',
+    ],
     output: {
         filename: 'app.js',
         path: path.join(__dirname, 'dist')

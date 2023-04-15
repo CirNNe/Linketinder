@@ -75,7 +75,7 @@ class EmpresaService implements EmpresaServiceInterface {
             List<MatchInterface> lista = recebeListaMatchsEmpresa(cnpj)
             List listaFormatada = new ArrayList()
             for(int posicao = 0; posicao < lista.size(); posicao++) {
-                listaFormatada.add("Candidato: " + lista[posicao]['nomeCandidato'])
+                listaFormatada.add("CandidatoEntidade: " + lista[posicao]['nomeCandidato'])
             }
             return listaFormatada
         } catch (Exception e) {

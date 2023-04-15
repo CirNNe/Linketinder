@@ -28,7 +28,7 @@ class CandidatoDAO implements CandidatoDAOInterface {
             String sql = "SELECT id FROM candidatos WHERE cpf = ?"
             return genericDAO.buscaIdUsuario(sql, cpf)
         } catch (Exception e) {
-            throw new Exception("Erro ao tentar encontrar o id do Candidato." + e)
+            throw new Exception("Erro ao tentar encontrar o id do CandidatoEntidade." + e)
         }
     }
 
