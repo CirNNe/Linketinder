@@ -1,13 +1,13 @@
 package Backend.Service
 
-import Backend.Model.DAO.EmpresaDAO
-import Backend.Model.DAO.Interface.EmpresaDAOInterface
-import Backend.Model.Entidade.Empresa
-import Backend.Model.Entidade.Interface.EmpresaInterface
-import Backend.Model.Entidade.Interface.MatchInterface
-import Backend.Model.Entidade.Match
-import Backend.Service.Interface.EmpresaServiceInterface
-import Backend.Service.Interface.ValidatorServiceInterface
+import com.example.linketinderwebteste.Backend.Model.DAO.Interface.EmpresaDAOInterface
+import com.example.linketinderwebteste.Backend.Model.Entidade.Empresa
+import com.example.linketinderwebteste.Backend.Model.Entidade.Interface.EmpresaInterface
+import com.example.linketinderwebteste.Backend.Model.Entidade.Interface.MatchInterface
+import com.example.linketinderwebteste.Backend.Model.Entidade.Match
+import com.example.linketinderwebteste.Backend.Service.EmpresaService
+import com.example.linketinderwebteste.Backend.Service.Interface.EmpresaServiceInterface
+import com.example.linketinderwebteste.Backend.Service.Interface.ValidatorServiceInterface
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import static org.mockito.Mockito.mock

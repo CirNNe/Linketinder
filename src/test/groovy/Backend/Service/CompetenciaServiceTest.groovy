@@ -1,15 +1,14 @@
 package Backend.Service
 
-import Backend.Model.DAO.CompetenciaDAO
-import Backend.Model.DAO.Interface.CompetenciaDAOInterface
-import Backend.Model.Entidade.Competencia
-import Backend.Model.Entidade.Interface.CompetenciaInterface
-import Backend.Service.Interface.CompetenciaServiceInterface
-import Backend.Service.Interface.ValidatorServiceInterface
+import com.example.linketinderwebteste.Backend.Model.DAO.Interface.CompetenciaDAOInterface
+import com.example.linketinderwebteste.Backend.Model.Entidade.Competencia
+import com.example.linketinderwebteste.Backend.Model.Entidade.Interface.CompetenciaInterface
+import com.example.linketinderwebteste.Backend.Service.CompetenciaService
+import com.example.linketinderwebteste.Backend.Service.Interface.CompetenciaServiceInterface
+import com.example.linketinderwebteste.Backend.Service.Interface.ValidatorServiceInterface
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import static org.mockito.Mockito.mock
-import static org.mockito.Mockito.when
 
 class CompetenciaServiceTest {
 

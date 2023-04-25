@@ -1,0 +1,97 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API cadastro de usuários e vagas",
+    "description": "API com finalidade de cadastrar novos usuários e vagas",
+    "contact": {
+      "email": "higor.azevedo@acelerazg.com.br"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/linketinder/",
+      "description": "API de teste"
+    }
+  ],
+  "paths": {
+    "/candidatos": {
+      "post": {
+        "summary": "Cadastro de cadidato",
+        "description": "Rota responsável por cadastrar um novo candidadato",
+        "tags": ["Candidatos"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Candidatos"
+              },
+              "examples": {
+                "candidato": {
+                  "value": {
+                    "nome": "Higor Cirne",
+                    "email": "email@email.com",
+                    "nascimento": "01-01-1991",
+                    "pais": "Brasil",
+                    "cpf": "12345678912",
+                    "cep": "12345678",
+                    "descricao": "Descrição profissional",
+                    "senha": "Senha@valida01",
+                    "competencias": ["API Rest", "Swagger"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Candidato cadastrado com sucesso!"
+          },
+          "401": {
+            "description": "Dados inválidos, por favor, tente novamente!"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Candidatos": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "nascimento": {
+            "type": "string"
+          },
+          "pais": {
+            "type": "string"
+          },
+          "cpf": {
+            "type": "string"
+          },
+          "cep": {
+            "type": "string"
+          },
+          "descricao": {
+            "type": "string"
+          },
+          "senha": {
+            "type": "string"
+          },
+          "competencias": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

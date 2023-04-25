@@ -1,14 +1,14 @@
 package Backend.Service
 
-import Backend.Model.DAO.Interface.VagaDAOInterface
-import Backend.Model.DAO.VagaDAO
-import Backend.Model.Entidade.Competencia
-import Backend.Model.Entidade.Interface.VagaInterface
-import Backend.Model.Entidade.Vaga
-import Backend.Service.Interface.VagaServiceInterface
-import Backend.Service.Interface.ValidatorServiceInterface
-import Backend.Util.Regex.RegexValidaDadosNovaVaga
-import Backend.Util.Regex.RegexValidaDadosNovoUsuario
+import com.example.linketinderwebteste.Backend.Model.DAO.Interface.VagaDAOInterface
+import com.example.linketinderwebteste.Backend.Model.Entidade.Competencia
+import com.example.linketinderwebteste.Backend.Model.Entidade.Interface.VagaInterface
+import com.example.linketinderwebteste.Backend.Model.Entidade.Vaga
+import com.example.linketinderwebteste.Backend.Service.Interface.VagaServiceInterface
+import com.example.linketinderwebteste.Backend.Service.Interface.ValidatorServiceInterface
+import com.example.linketinderwebteste.Backend.Service.VagaService
+import com.example.linketinderwebteste.Backend.Util.Regex.RegexValidaDadosNovaVaga
+import com.example.linketinderwebteste.Backend.Util.Regex.RegexValidaDadosNovoUsuario
 import org.junit.jupiter.api.Test
 import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.mockito.Mockito.mock

@@ -5,10 +5,12 @@
 ![Apache Groovy](https://img.shields.io/badge/Apache%20Groovy-4298B8.svg?style=for-the-badge&logo=Apache+Groovy&logoColor=white)
 ![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white)
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![Apache Tomcat](https://img.shields.io/badge/apache%20tomcat-%23F8DC75.svg?style=for-the-badge&logo=apache-tomcat&logoColor=black)
+
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
-![Version](https://img.shields.io/badge/version-v3.3.0-blue) 
+![Version](https://img.shields.io/badge/version-v4.0.0-blue) 
 
 
 Indice
@@ -30,24 +32,41 @@ pode curtir o perfil de um candidato e, também, o candidato pode curtir uma vag
 
 ## 🔖&nbsp; Versão
 
+![Version](https://img.shields.io/badge/version-v4.0.0-blue)
+
+Rest API:
+- Implementada a API para cadastro de usuários e vagas no sistema do linketinder
+  - Servidor implementado com Apache Tomcat versão 8.5.88
+  - Os endpoints foram implementados usando o Servlets para mapear
+  - Para mais informações de como executar o projeto, acessar o arquivo de documentação: swagger.json
+    - É recomendável utilizar um editor para ler a documentação de uma forma mais agradável, como o Swagger
+
+![Version](https://img.shields.io/badge/version-v3.3.0-blue)
+
+Padrão MVC:
+- Frontend refatorado com o padrão MVC:
+  - O padrão aplicado no Frontend simplificou a leitura e agilidade de execução código.
+- Backend reavaliado:
+  - O padrão MVC no Backend foi reavaliado e foram feitos alguns ajustes pontuais.
+
 ![Version](https://img.shields.io/badge/version-v3.2.0-blue)
 
-- Padrão MVC
-  - Frontend refatorado com o padrão MVC:
-    - O padrão aplicado no Frontend simplificou a leitura e agilidade de execução código.
-  - Backend reavaliado:
-    - O padrão MVC no Backend foi reavaliado e foram feitos alguns ajustes pontuais.
-
-![Version](https://img.shields.io/badge/version-v3.2.0-blue)
-
-- Design Patterns
-  - Singleton:
-    - Foi aplicado o padrão na conexão ao banco de dados, com isso, conexões desnecessárias são evitadas melhorando o desempenho e uso eficiente dos recursos do banco        de dados e, por existir apenas uma instância de conexão, evita problemas relacionados a múltiplas instâncias de conexão concorrentes, como conflitos de                 transação ou problemas de sincronização.
-  - Factory:
-    - Foi aplicado o padrão com a finalidade de resolver os problemas de acoplamento entre o código do cliente e as classes do produto. Ao centralizar a lógica de            criação dos objetos, simplificou o código e reduziu a duplicação em alguns pontos do sistema. Também, ficou mais simples de adicionar, remover ou                       substituir objetos criados pela fábrica sem alterar o código que a utiliza, tornando o sistema mais adaptável a mudanças de requisitos ou acomodação                    de diferentes variantes de objetos.
+Design Patterns:
+- Singleton:
+  - Foi aplicado o padrão na conexão ao banco de dados, com isso, conexões desnecessárias são evitadas melhorando o
+    desempenho e uso eficiente dos recursos do banco de dados e, por existir apenas uma instância de conexão,
+    evita problemas relacionados a múltiplas instâncias de conexão concorrentes, como conflitos de transação ou
+    problemas de sincronização.
+- Factory:
+  - Foi aplicado o padrão com a finalidade de resolver os problemas de acoplamento entre o código do cliente e as
+    classes do produto. Ao centralizar a lógica de criação dos objetos, simplificou o código e reduziu a duplicação em
+    alguns pontos do sistema. Também, ficou mais simples de adicionar, remover ou substituir objetos criados pela 
+    fábrica sem alterar o código que a utiliza, tornando o sistema mais adaptável a mudanças de requisitos ou acomodação 
+    de diferentes variantes de objetos.
 
 ![Version](https://img.shields.io/badge/version-v3.1.0-blue)
 
+Clean Code:
 - Código refatorado com Clean Code
   - Pontos de melhorias notadas:
     - Código mais legível
@@ -116,8 +135,10 @@ Testes Unitários:
 O projeto foi desenvolvido com as tecnologias
 
 - Apache Groovy
-- TypeScript
+- Gradle
 - PostgreSQL
+- Apache Tomcat
+- TypeScript
 - HTML5
 - CSS3
 
